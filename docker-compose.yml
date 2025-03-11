@@ -1,8 +1,7 @@
 version: '3.8'
 
-
 services:
-  db:
+  initdb:
     image: mysql:latest
     container_name: mysql-db
     restart: always
@@ -16,21 +15,21 @@ services:
     volumes:
       - ./initdb:/docker-entrypoint-initdb.d  # Cargar estructura inicial de BD
 
-  web:
-    container_name: web_phishing
-    build: ./python  # Tu primer servidor Flask
+  phishing-web:
+    container_name: phishing-web
+    build: ./phishing-web  # Tu primer servidor Flask
     restart: always
     depends_on:
-      - db
+      - initdb
     expose:
       - "5000:5000"
 
- # web2:
- #   container_name: web_datos
- #   build: ./otra_web  # Otro servidor Flask si lo necesitas
+ # resultados-web:
+ #   container_name: resultados-web
+ #   build: ./resultados-web  # Otro servidor Flask si lo necesitas
  #   restart: always
  #   depends_on:
- #     - db
+ #     - initdb
  #   expose:
  #     - "5001:5001"
 
@@ -38,8 +37,8 @@ services:
     image: nginx:latest
     restart: always
     depends_on:
-    - web
-    # - web2
+    - phishing-web
+    # - resultados-web
     ports:
       - "8080:80"
     volumes:
