@@ -21,7 +21,7 @@ services:
     restart: always
     depends_on:
       - initdb
-    expose:
+    ports:
       - "5000:5000"
 
  # resultados-web:
@@ -30,7 +30,7 @@ services:
  #   restart: always
  #   depends_on:
  #     - initdb
- #   expose:
+ #   ports:
  #     - "5001:5001"
 
   nginx:
