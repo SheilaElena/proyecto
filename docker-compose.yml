@@ -24,21 +24,21 @@ services:
     ports:
       - "5000:5000"
 
- # resultados-web:
- #   container_name: resultados-web
- #   build: ./resultados-web  # Otro servidor Flask si lo necesitas
- #   restart: always
- #   depends_on:
- #     - initdb
- #   ports:
- #     - "5001:5001"
+  resultados-web:
+    container_name: resultados-web
+    build: ./resultados-web  # Otro servidor Flask si lo necesitas
+    restart: always
+    depends_on:
+      - initdb
+    ports:
+      - "5001:5001"
 
   nginx:
     image: nginx:latest
     restart: always
     depends_on:
     - phishing-web
-    # - resultados-web
+    - resultados-web
     ports:
       - "8080:80"
     volumes:
