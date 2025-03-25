@@ -28,7 +28,8 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+      #- ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - ./phishing-web:/usr/share/nginx/html
     networks:
       - mynetwork
 
@@ -40,28 +41,43 @@ services:
     restart: always
     depends_on:
       - initdb
+      - php-fpm
     ports:
-      - "5001:5001"
+      - "5001:80"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
-      - ./resultados-web:/usr/share/nginx/html
+      #- ./resultados-web/nginx.conf:/etc/nginx/nginx.conf
+      - ./resultados-web:/var/www/html
+    networks:
+      - mynetwork
+
+  php-fpm:
+    build:
+      context: ./php-fpm
+      dockerfile: Dockerfile
+    container_name: php-fpm
+    volumes:
+      - ./resultados-web:/var/www/html
     networks:
       - mynetwork
 
   nginx:
+    container_name: proyecto-nginx
     image: nginx:latest
     restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./resultados-web:/var/www/html
     depends_on:
       - phishing-web
       - resultados-web
-    ports:
-      - "8080:80"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-     # - ./nginx/phishing-web.conf:/etc/nginx/conf.d/phishing-web.conf
-     # - ./nginx/resultados-web.conf:/etc/nginx/conf.d/resultados-web.conf
     networks:
       - mynetwork
 
+
 networks:
   mynetwork:
+    driver: bridge
+
