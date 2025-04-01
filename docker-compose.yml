@@ -74,6 +74,7 @@ services:
     depends_on:
       - phishing-web
       - resultados-web
+      - php-fpm
     networks:
       - mynetwork
 
