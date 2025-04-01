@@ -70,6 +70,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./resultados-web:/var/www/html
+      - ./phishing-web:/usr/share/nginx/html
     depends_on:
       - phishing-web
       - resultados-web
