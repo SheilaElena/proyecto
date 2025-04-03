@@ -1,0 +1,79 @@
+/**
+ * @file
+ * JS file to manage campaign.
+ */
+
+(function (Drupal, drupalSettings) {
+  'use strict';
+
+  const ready = (callback) => {
+    if (document.readyState != 'loading') callback();
+    else if (document.addEventListener) document.addEventListener('DOMContentLoaded', callback);
+    else document.attachEvent('onreadystatechange', function () {
+        if (document.readyState == 'complete') callback();
+      });
+  };
+  ready(() => {
+
+    //Get Referer / c parameter
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const refererJS = document.referrer;
+    const cParam = urlParams.get('c');
+
+    function setCookie(name, value, days) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    function getCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+      }
+      return null;
+    }
+
+    //Checking Campaign cookie
+    //If there is a c GET parameter, set the cookie with its value
+    if (cParam) {
+      setCookie('CAMPAIGN_CODE', cParam, 0);
+      setCookie('CAMPAIGN_CODE_TOKEN', 1, 0);
+    } else if (!getCookie('CAMPAIGN_CODE')) {
+      //Set campaign cookie value if it's empty
+      let is_seo_campaign = false;
+      const config = drupalSettings.pso_campaign;
+
+      if (refererJS) {
+        const seoGroups = [
+          'google\.',
+          'yahoo\.',
+          'msn\.',
+          'es\.ask\.com',
+          '\.bing\.com',
+          'search\.babylon\.com',
+        ];
+        seoGroups.every(seo_group => {
+          if (refererJS.includes(seo_group)) {
+            setCookie('CAMPAIGN_CODE', config.seo_campaign, 0);
+            is_seo_campaign = true;
+            return false; //break
+          }
+        });
+      }
+
+      if (!is_seo_campaign) {
+        setCookie('CAMPAIGN_CODE', config.web_campaign, 0);
+      }
+    }
+  });
+
+})(Drupal, drupalSettings);

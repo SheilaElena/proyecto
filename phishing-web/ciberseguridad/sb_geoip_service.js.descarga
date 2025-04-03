@@ -1,0 +1,473 @@
+/**
+ * @file
+ * Contains the definition of the behaviour site builder geoip module.
+ */
+
+(function (Drupal, drupalSettings) {
+  'use strict';
+
+  function ajaxUpdateFieldsLocation(data, context) {
+
+    let country = data.isoCountry,
+      residenceCountry = context.querySelectorAll('[name$="_residencecountry"]'),
+      validResidenceCountry = false;
+      if (Array.isArray(residenceCountry) && !residenceCountry.length) {
+        validResidenceCountry = residenceCountry[0].value ? true : false;
+      }
+
+    // Location var will be only available inside the ajax call, so the rest
+    // of the logic must be into the "then" function call. Same for country subdivisions.
+    if (country != '-' && country!=undefined) {
+
+
+      for (let i = 0; i < residenceCountry.length; i++) {
+        let form = residenceCountry[i].closest('form');
+
+        // Update country value
+        residenceCountry[i].value = country;
+        const e = new Event("change");
+        residenceCountry[i].dispatchEvent(e);
+
+        // for MCC style select
+        let selected = document.querySelector("#" + residenceCountry[i].getAttribute("id")).getAttribute("selected");
+        if (selected) {
+          let optionText = document.querySelector("#" + residenceCountry[i].getAttribute("id") + " option:selected").getAttribute('text');
+          if (optionText != '') {
+            let aux = residenceCountry[i].nextElementSibling.classList.contains(".sb-custom-select__styled");
+            aux.textContent = optionText;
+          }
+        }
+
+        // Update province and postalcode
+        updateFieldsOnCountryChange(form, country, context);
+      }
+
+      let nationality = context.querySelectorAll('[name$="_nationality"]');
+
+      nationality.forEach( item => {
+
+        let form = item.closest('form');
+
+        //Avoid the SA Request for Admission Form
+        //Defenssive Programming: avoiding null form object
+        if (form && form.getAttribute('id') != "webform-submission-request-for-admission-add-form") {
+          // Update country value
+          item.value = country;
+          // Update province and postalcode
+          updateFieldsOnCountryChange(form, country);
+        }
+      })
+
+    } else if (!validResidenceCountry) {
+      document.querySelector('[name$="_postcode"]').parentElement.style.display = 'none';
+      document.querySelector('[name$="_province"]').parentElement.style.display = 'none';
+    }
+  }
+
+  function getLocationAndUpdateFields(context) {
+    // Initializations
+    let scheme = (drupalSettings.host_geoip.domain == 'localhost') ? 'http://' : 'https://';
+    //let currentBaseUrl =   scheme + drupalSettings.host_geoip.domain + '/' + drupalSettings.path.pathPrefix;
+    let currentBaseUrl = window.location.protocol + '//' + window.location.host + '/' + drupalSettings.path.pathPrefix;
+    let getLocationUrl = currentBaseUrl + 'sb_geoip/get-location';
+
+    let request = Drupal.PlanetasbGeoIp.localStorageGet('request_geoip_location');
+    if (request == null) {
+      let cant_request_geoip = Drupal.PlanetasbGeoIp.localStorageGet('cant_request_geoip');
+      if (cant_request_geoip == null || cant_request_geoip === "undefined") {
+        Drupal.PlanetasbGeoIp.localStorageSet('cant_request_geoip', "1");
+
+        let options = {method: 'POST',headers: {'Content-Type': 'application/json'}};
+
+        fetch(getLocationUrl, options).then((response) => {
+          return response.json();
+        }).then((response_data) => {
+          let data = response_data;
+
+          data.urlrequest = getLocationUrl;
+          // Stored Object in cache.
+          Drupal.PlanetasbGeoIp.localStorageSet('request_geoip_location', JSON.stringify(data));
+          Drupal.PlanetasbGeoIp.localStorageSet('cant_request_geoip', "");
+          ajaxUpdateFieldsLocation(data, context);
+        });
+      }
+
+    } else {
+      // Get the object stored in cache.
+      let obj = JSON.parse(request);
+      ajaxUpdateFieldsLocation(obj, context);
+    }
+
+  }
+
+  function updateFieldsOnCountryChange(form, country, context) {
+    // Initializations
+    let province = form.querySelector('[name$="_province"]'),
+      postcode = form.querySelector('[name$="_postcode"]'),
+      phoneNumber = form.querySelector('[name$="_phonenumber"]'),
+      phoneNumberPrefix = form.querySelector('[name$="_phonenumberprefix"]');
+    var countriesPostcode = drupalSettings.sb_geoip.countriesPostcode;
+
+    // Fill phone number field with country prefix and change the prefix at phone suffix span
+
+    let countryPrefix = null;
+    let selectedCountryOption = form.querySelector('[name$="_residencecountry"] option[value="' + country + '"]');
+    if (selectedCountryOption) {
+      countryPrefix = selectedCountryOption.getAttribute('data-phoneprefix');
+    }
+
+    if (countryPrefix != null) {
+      const countryPrefixFormatte = countryPrefix.replace('+', '');
+
+      phoneNumberPrefix.setAttribute('value',countryPrefixFormatte);
+
+      if (phoneNumber != null) {
+        phoneNumber.parentElement.parentElement.querySelector('.field-prefix').textContent = '(' + countryPrefixFormatte + ')';
+      }
+
+      if (countriesPostcode.indexOf(country) != -1) {
+        // Hide province and show postal code
+        province.parentElement.style.display = 'none';
+        postcode.parentElement.style.display = '';
+        province.removeAttribute('required');
+      } else {
+        if (country == '') {
+          province.parentElement.style.display = 'none';
+          province.removeAttribute('required');
+          postcode.parentElement.style.display = 'none';
+        } else {
+          // Hide postal code and show province
+          postcode.parentElement.style.display = 'none';
+          province.parentElement.classList.remove('js-form-type-textfield', 'form-type-textfield');
+          province.parentElement.classList.add('js-form-type-select', 'form-type-select');
+          province.parentElement.style.display = '';
+          province.setAttribute('required', 'required');
+        }
+
+        // Initializations
+        let currentBaseUrl = window.location.protocol + '//' + window.location.host + '/',
+          getCountrySubdivisionsUrl = currentBaseUrl + 'sb_geoip/get-country-subdivisions/' + country,
+          request_country = Drupal.PlanetasbGeoIp.localStorageGet('request_country_subdivisions_' + country),
+          keyCache = 'countrySubdivisions_' + country;
+        var countrySubdivisionsCache = drupalSettings.sb_geoip[keyCache];
+
+        if (request_country == null) {
+          let cant_request_geoip_subd = Drupal.PlanetasbGeoIp.localStorageGet('cant_request_geoip_' + country);
+
+          if (countrySubdivisionsCache != undefined) {
+            ajaxUpdateFieldsOnCountry(form, countrySubdivisionsCache, context);
+          } else if (cant_request_geoip_subd == null || cant_request_geoip_subd === "undefined") {
+            // We save that there is an ajax call that will be executed.
+            Drupal.PlanetasbGeoIp.localStorageSet('cant_request_geoip_' + country, "1");
+
+            // Get country subdivisions to edit province field
+            fetch(getCountrySubdivisionsUrl).then((response) => {
+              return response.json();
+            }).then((response_data) => {
+              let data = response_data;
+
+              data.urlrequest = getCountrySubdivisionsUrl;
+              // Stored object in cache.
+              Drupal.PlanetasbGeoIp.localStorageSet('request_country_subdivisions_' + country, JSON.stringify(data));
+              Drupal.PlanetasbGeoIp.localStorageSet('cant_request_geoip_' + country, "");
+              ajaxUpdateFieldsOnCountry(form, data, context);
+            });
+          }
+        } else {
+          // Get the object stored in cache
+          const obj = JSON.parse(request_country);
+
+          ajaxUpdateFieldsOnCountry(form, obj, context);
+        }
+      }
+    } else {
+      if (province != null) {
+        province.parentElement.style.display = 'none';
+        province.removeAttribute('required');
+      }
+      if (postcode != null) {
+        postcode.parentElement.style.display = 'none';
+      }
+    }
+  }
+
+  function ajaxUpdateFieldsOnCountry(form, data, context) {
+
+    let province = form.querySelector('[name$="_province"]'),
+      provinceParent = province.parentElement;
+
+    // Disable province field to avoid a selection prior to data change
+    province.disabled = true;
+
+    // Get country subdivisions data and sort them alphabetically
+    // Normalize + replace does change accents to non-accented vowels
+    let countrySubdivisions = data;
+    countrySubdivisions.sort(function (countryA, countryB) {
+      let countryAnormalized = countryA.name.normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
+        countryBnormalized = countryB.name.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+      return (countryBnormalized < countryAnormalized);
+    });
+
+    // Get label field
+    const getSiblings = (elem) => {
+      // create an empty array
+      let siblings = [];
+
+      // if no parent, return empty list
+      if (!elem.parentNode) {
+        return siblings;
+      }
+
+      // first child of the parent node
+      let sibling = elem.parentNode.firstElementChild;
+
+      // loop through next siblings until `null`
+      do {
+        // push sibling to array
+        if (sibling != elem) {
+          siblings.push(sibling);
+        }
+      } while (sibling = sibling.nextElementSibling);
+
+      return siblings;
+    };
+    let siblings = getSiblings(province);
+    let province_label = (siblings || []).map((item) => {
+      if (item.tagName.toLowerCase() == 'label') {
+        return item;
+      }
+    });
+
+    // Check if the country has subdivisions
+    if (countrySubdivisions.length) {
+      // Generate a select with country subdivisions as options and replace province field
+      // Remove label, the select field won't need it
+      if (province_label.length > 0 && province_label[0] != undefined) {
+        province_label[0].remove();
+      }
+      if (provinceParent.querySelector('.ss-main') != null) {
+        provinceParent.querySelector('.ss-main').remove();
+      }
+
+      provinceParent.classList.remove('js-form-type-textfield', 'form-type-textfield');
+      provinceParent.classList.add('js-form-type-select', 'form-type-select');
+
+      // Generate select with options taken from country subdivisions endpoint
+      let select = document.createElement('select');
+      select.setAttribute('required', 'required');
+      select.classList.add('form-select');
+      select.setAttribute('id', province.getAttribute('id'));
+      select.setAttribute('name', province.getAttribute('name'));
+
+      let default_option = document.createElement('option');
+      default_option.setAttribute('value', '');
+      default_option.textContent = Drupal.t('Province *');
+
+      select.appendChild(default_option);
+
+      countrySubdivisions.forEach(function (countrySubdivision) {
+        let option = document.createElement('option');
+        let value;
+        let text;
+
+        if (countrySubdivision.iso != null) {
+          value = '[' + countrySubdivision.iso + '] ' + countrySubdivision.name;
+          text = countrySubdivision.name;
+        } else {
+          value = countrySubdivision.name;
+          text = countrySubdivision.name;
+        }
+
+        option.setAttribute('value', value);
+        option.textContent = text;
+        select.appendChild(option);
+      });
+
+      // Replace field with new select
+      province.replaceWith(select);
+
+      // Initializing province select as a SlimSelect
+      new SlimSelect({
+        select: '#' + select.getAttribute('id'),
+        settings: {
+          contentLocation: provinceParent,
+          contentPosition: 'relative',
+          showSearch: true,
+          selectByGroup: false,
+          searchPlaceholder: 'Buscar',
+          searchText: Drupal.t("Resultado no encontrado"),
+          searchFilter: (option, search) => {
+            let aux = option.text + " ";
+            return aux.toUpperCase().indexOf(search.toUpperCase()) > -1
+          }
+        },
+        events: {
+          afterChange: () => {
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        }
+      });
+
+      // let form_closest=province.closest('form');
+      // let form_closest2=form_closest.closest('form');
+      form.querySelector('[type="submit"]').disabled = true;
+      var provinceId = document.querySelector('#' + select.getAttribute('id'));
+      if (provinceId && provinceId.parentElement) {
+        var provinceChild = provinceId.parentElement.children;
+  
+        var checkErrorBox = 0;
+        for (var i = 0; i < provinceChild.length; i++) {
+  
+          if ((provinceChild[i].className == "error-box") || (provinceChild[i].className == "error-box error-box--visible")) {
+            checkErrorBox = checkErrorBox + 1;
+          }
+          else {
+            checkErrorBox = checkErrorBox;
+          }
+        }
+
+        if (checkErrorBox == 0) {
+          let span = document.createElement('span');
+          span.classList.add('error-box');
+          document.querySelector('#' + select.getAttribute('id')).after(span);
+          // document.querySelector('#' + province.getAttribute('id')).after('<span class="error-box"></span>');
+        }
+      }
+    } 
+    else {
+      provinceParent.classList.remove('js-form-type-select', 'form-type-select');
+      provinceParent.classList.add('js-form-type-textfield', 'form-type-textfield');
+      // Generate an input type text and replace province field
+      let label = document.createElement('label');
+      label.classList.add('js-form-required', 'form-required');
+      label.setAttribute('for', province.getAttribute('id'));
+      label.textContent = Drupal.t('Province');
+      let input = document.createElement('input');
+      input.setAttribute('required', 'required');
+      input.classList.add('form-text', 'required');
+      input.setAttribute('type', 'text');
+      input.setAttribute('id', province.getAttribute('id'));
+      input.setAttribute('name', province.getAttribute('name'));
+      input.setAttribute('size', 60);
+      input.setAttribute('maxlength', 255);
+      input.setAttribute('placeholder', ' ');
+
+      // Replace field with new text field
+      province.remove();
+      if (province_label.length > 0 && province_label[0] != undefined) {
+        province_label[0].remove();
+      }
+
+      // provinceParent.appendChild(label);
+      // provinceParent.appendChild(input);
+      // province.replaceWith(label + input);
+      province.replaceWith(input);
+
+      if (provinceParent.querySelector('.ss-main')) {
+        provinceParent.querySelector('.ss-main').style.display = 'none';
+      }
+    }
+
+    // Enable province field
+    province.disabled = false;
+  }
+
+  Drupal.behaviors.sbGeoIP = {
+    attach: function attach(context, settings) {
+
+      Drupal.PlanetasbGeoIp = Drupal.PlanetasbGeoIp || {};
+
+      if (drupalSettings.sb_geoip == undefined) {
+        return;
+      }
+
+      /**
+       * Get an element from localStorage
+       */
+      Drupal.PlanetasbGeoIp.localStorageGet = function (key) {
+        if (!Drupal.PlanetasbGeoIp.storageAvailable('localStorage')) {
+          return undefined;
+        }
+        return localStorage.getItem(key);
+      };
+
+      /**
+       * Set an element from localStorage
+       */
+      Drupal.PlanetasbGeoIp.localStorageSet = function (key, value) {
+        if (!Drupal.PlanetasbGeoIp.storageAvailable('localStorage')) {
+          return;
+        }
+        localStorage.setItem(key, value);
+      };
+
+      /**
+       * Remove an element from localStorage
+       */
+      Drupal.PlanetasbGeoIp.localStorageRemove = function (key) {
+        if (!Drupal.PlanetasbGeoIp.storageAvailable('localStorage')) {
+          return undefined;
+        }
+        localStorage.removeItem(key);
+      };
+
+      /**
+       * Check if session storage is available.
+       *
+       * @credit: https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
+       */
+      Drupal.PlanetasbGeoIp.storageAvailable = function (type) {
+        let storage;
+        try {
+          storage = window[type];
+          let x = '__storage_test__';
+          storage.setItem(x, x);
+          storage.removeItem(x);
+          return true;
+        } catch (e) {
+          return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            (storage && storage.length !== 0);
+        }
+      };
+
+      // Initializations
+      let residenceCountry = context.querySelector('[name$="_residencecountry"]');
+      let nationality = context.querySelector('[name$="_nationality"]');
+      let body = document.body;
+
+      // It the page has a form with a country field
+      let pageHasFormWithCountryField = residenceCountry != null || nationality != null;
+
+      // Get user location and alter forms
+      if (pageHasFormWithCountryField && body) {
+        getLocationAndUpdateFields(context);
+        // body.setAttribute('data-sb_geoip', true);
+      }
+
+      // $('[name$="_residencecountry"]').once('sb_geoip').on('change', function () {
+      let elements = document.querySelectorAll('[name$="_residencecountry"]');
+      for (var i = 0; i < elements.length; i++) {
+        // To replace jquery once function.
+        if (!elements[i].classList.contains('sb_geoip')) {
+          elements[i].addEventListener('change', function (e) {
+            let _this = e.target,
+              country = _this.value,
+              form = _this.closest('form');
+            updateFieldsOnCountryChange(form, country, context);
+          });
+          elements[i].classList.add('sb_geoip');
+        }
+      }
+    }
+  };
+})(Drupal, drupalSettings);
