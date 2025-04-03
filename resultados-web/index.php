@@ -1,4 +1,37 @@
+<!-- CONEXION -->
 <?php
+
+  session_start();
+
+  $servername = "mysql-db";
+  $username = "sea";
+  $password = "proyectose@";
+  $database = "bd_keyloggers";
+  
+      // Creamos la conexion y seleccionamos la base de datos
+      $conn = mysqli_connect($servername, $username, $password, $database);
+      // Check connection
+      if (!$conn) {
+          die("Conexion fallida: " . mysqli_connect_error());
+     
+      }
+  
+  
+  /* session_start();
+
+    $servername = "localhost";
+    $username = "root";
+    $database = "bd_keyloggers";
+    $password = "";
+
+    
+    // Creamos la conexion y seleccionamos la base de datos
+    $conn = mysqli_connect($servername, $username, $password, $database);
+    // Check connection
+    if (!$conn) {
+        die("Conexion fallida: " . mysqli_connect_error());
+    }   
+      
     session_start();
 
     $servername = "mysql-db";
@@ -11,9 +44,45 @@
     // Check connection
     if (!$conn) {
         die("Conexion fallida: " . mysqli_connect_error());
-    }   
-
+    
+    
+    
+    */
 ?>
+
+<?php
+            
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['IniciarSesion'])) {
+        $nombre =  $_POST['nombre'];
+        $contrasena =  $_POST['contrasena'];
+    
+        $sql = "SELECT * FROM usuario WHERE nombre = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+
+
+        mysqli_stmt_bind_param($stmt, 's', $nombre);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+            if ($contrasena === $row['contrasena']) {
+                // Establecer nueva sesión con los datos del usuario
+                $_SESSION['nombre'] = $row['nombre'];
+                $_SESSION['contrasena'] = $row['contrasena'];
+    
+                // Redirigir según el tipo de usuario
+                if ($_SESSION['nombre'] === $row['nombre']) {
+                    header("Location: php/opciones.php");
+                }
+                exit;
+            } else {
+                echo "<script>alert('Datos incorrectos');</script>";
+            }
+        }
+    }
+    ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -35,76 +104,32 @@
             <div class="logo">
                 <img src="img/logo.png" alt="COACHING SL">
             </div>
-            <nav>
-                <ul>
-                    <?php
-                        echo "<li><a href=''><i class='fa fa-home'></i> <span data-translate='inicio'>Inicio</span></a></li>";
-                    //Para controlar el acceso de los usuarios no registrados dentro de nuestra página, hemos decidido que 
-                    //solo muestre este enlace como posible ruta
-                    ?>
-                    
-                    <li>               
-                        <div class="lenguage-selector">
-                            <label for="lenguage"></label>
-                            <select name="lenguage" id="lenguage">
-                                <option value="es" data-translate="espanol">Español</option>
-                                <option value="ca" data-translate="catalan">Catalan</option>
-                                <option value="en" data-translate="ingles">Inglés</option>
-                                <option value="fr" data-translate="frances">Francés</option>
-                                <option value="it" data-translate="italiano">Italiano</option>
-                                <option value="eu" data-translate="euskera">Euskera</option>
-                                <option value="gl" data-translate="gallego">Gallego</option>
-                                <option value="su" data-translate="sueco">Sueco</option>
-                            </select>
-                        </div>
-                    </li>
-                </ul>
-            </nav>
         </div>
 
             <div class="form-container sign-up-container">
                 <div class="Inicio_fondoo">
                     <div class="Contenedor_Inicio">
-                    <h1>COACHING SL</h1>
-                    <p class="frase_inicio">¡Bienvenido a la página que te va a cambiar la forma de ver tu vida!</p>
+                    <h1>PROYECTO ASIX 2</h1>
+                    <p class="frase_inicio">No sé que poner, ayuda Sheila</p>
                 </div>
             </div>
 
             <hr class="highlight"/> <!-- SEPARADOR-->
 
-            <div class="gestioncliente" id="container">
-                <form class="cliente-contenedor" action="" method="post">
-                    <h1 class="titulos">Regístrate</h1>
-                    <input type="text" name="DNI_Cliente" required pattern="[0-9]{8}[A-Za-z]{1}" placeholder="DNI">
-                    <input type="tel" name="NumTelefono_Cliente" required placeholder="Teléfono">
-                    <input type="email" name="Correo_Cliente" required placeholder="Correo">
-                    <input type="text" name="Nombre_Cliente" required pattern="[a-zA-Z\s]+" placeholder="Nombre">
-                    <input type="text" name="Apellido_Cliente" required pattern="[a-zA-Z\s]+" placeholder="Apellidos">
-                    <input type="password" name="Contrasena_Cliente" required placeholder="Contraseña">
-                    <input type="date" name="FechaNacimiento_Cliente" placeholder="Fecha de Nacimiento">
-                    <input type="text" name="NombreVia_Cliente" placeholder="Nombre de la vía">
-                    <input type="text" name="NumeroVia_Cliente" placeholder="Número de la vía">
-                    <input type="text" name="TipoVia_Cliente" placeholder="Tipo de vía">
-                <!-- <input type="text" name="Tipo" placeholder="Tipo"> -->
-                    <button class="acciones" type="submit" name="RegistrarUsuario">Registrarse</button>
-                </form>
-            </div>
-
             <!-- INICIO DE SESIÓN -->
             <div class="form-container login-container">
                 <form class="cliente-contenedor" action="" method="post">
                     <h1>Iniciar Sesión</h1>
-                    <input type="text" name="DNI_Cliente" required placeholder="DNI">
-                    <input type="password" name="Contrasena_Cliente" required placeholder="Contraseña">
+                    <input type="text" name="nombre" required placeholder="Nombre">
+                    <input type="password" name="contrasena" required placeholder="Contraseña">
                     <button class="acciones" type="submit" name="IniciarSesion">Iniciar Sesión</button>
-                    <a class="acciones" href="php/recuperar.php">He olvidado la contraseña</a>
                 </form>
             </div>
-            <a class="enlaceess" href="php/inicioESPE.php">Iniciar Sesión Especialista</a>
         </div>
 
-        <hr class="highlight"/> <!-- SEPARADOR-->
+    <!--    <hr class="highlight"/>  SEPARADOR-->
 
+<!--
         <section id="about">
             <div class="container">
                 <div class="explicacionQueVasAEncontrar">
@@ -113,7 +138,7 @@
                 </div>
             
                 <br>
-                <hr class="highlight"/> <!-- SEPARADOR-->
+                <hr class="highlight"/> 
                 <br>
 
                 <ul class="GlobalApartadosInfo">
@@ -165,6 +190,7 @@
                 </ul>
             </div>
         </section>
+-->
 
             <br>
                 <hr class="highlight"/> <!-- SEPARADOR-->
