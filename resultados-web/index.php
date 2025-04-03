@@ -1,4 +1,4 @@
-<!-- CONEXION -->
+//Conexión
 <?php
 
   session_start();
@@ -105,6 +105,7 @@
                 <img src="img/logo.png" alt="COACHING SL">
             </div>
         </div>
+
 
             <div class="form-container sign-up-container">
                 <div class="Inicio_fondoo">

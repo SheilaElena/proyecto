@@ -20,3 +20,9 @@ CREATE TABLE IF NOT EXISTS Phishing (
     correo VARCHAR(100) NOT NULL,
     contrasena VARCHAR(100) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS usuario (
+    nombre VARCHAR (100) PRIMARY KEY,
+    apellido VARCHAR (100) NOT NULL,
+    contrasena VARCHAR(100) NOT NULL
+);
