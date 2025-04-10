@@ -3,7 +3,7 @@
 
     session_start();
 
-    $servername = "localhost";
+      $servername = "mysql-db";
     $username = "sea";
     $password = "proyectose@";
     $database = "bd_keyloggers";
