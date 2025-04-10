@@ -1,4 +1,4 @@
-#version: '3.8'
+version: '3.8'
 
 services:
   initdb:
@@ -13,40 +13,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./initdb:/docker-entrypoint-initdb.d  # Cargar estructura inicial de BD
-    networks:
-      - mynetwork
-
-  phishing-web:
-    container_name: phishing-web
-    build:
-      context: ./phishing-web
-      dockerfile: Dockerfile
-    restart: always
-    depends_on:
-      - initdb
-    ports:
-      - "5000:5000"
-    volumes:
-      #- ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
-      - ./phishing-web:/usr/share/nginx/html
-    networks:
-      - mynetwork
-
-  resultados-web:
-    container_name: resultados-web
-    build:
-      context: ./resultados-web
-      dockerfile: Dockerfile
-    restart: always
-    depends_on:
-      - initdb
-      - php-fpm
-    ports:
-      - "5001:80"
-    volumes:
-      #- ./resultados-web/nginx.conf:/etc/nginx/nginx.conf
-      - ./resultados-web:/var/www/html
+      - ./initdb:/docker-entrypoint-initdb.d
     networks:
       - mynetwork
 
@@ -62,24 +29,22 @@ services:
 
   nginx:
     container_name: proyecto-nginx
-    image: nginx:latest
+    build:
+      context: ./nginx
     restart: always
     ports:
       - "80:80"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./resultados-web:/var/www/html
-      - ./phishing-web:/usr/share/nginx/html
     depends_on:
-      - phishing-web
-      - resultados-web
       - php-fpm
+      - initdb
+    volumes:
+    - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    - ./resultados-web:/var/www/html
+    - ./phishing-web:/usr/share/nginx/html
     networks:
       - mynetwork
-
 
 networks:
   mynetwork:
     driver: bridge
-

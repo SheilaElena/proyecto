@@ -1,9 +1,9 @@
-#FROM nginx:latest
+FROM nginx:latest
 
-# Copiar la configuración personalizada de Nginx
-#COPY ./nginx.conf /etc/nginx/conf.d/nginx.conf
-#COPY phishing-web.conf /etc/nginx/conf.d/phishing-web.conf
-#COPY resultados-web.conf /etc/nginx/conf.d/resultados-web.conf
-# Exponer puerto 80
-#EXPOSE 80
+# Copiar la configuración principal de nginx
+COPY nginx.conf /etc/nginx/nginx.conf
 
+# Copiar los archivos de configuración de los sitios
+COPY conf.d/ /etc/nginx/conf.d/
+
+EXPOSE 80
