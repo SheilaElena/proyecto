@@ -1,9 +1,8 @@
-<!-- CONEXION -->
 <?php
+ob_start();
+session_start();
 
-    session_start();
-
-      $servername = "mysql-db";
+    $servername = "mysql-db";
     $username = "sea";
     $password = "proyectose@";
     $database = "bd_keyloggers";
