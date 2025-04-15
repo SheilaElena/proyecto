@@ -1,6 +1,5 @@
-<!-- CONEXION -->
 <?php
-
+    ob_start();
     session_start();
 
     $servername = "mysql-db";
