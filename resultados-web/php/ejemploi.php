@@ -1,7 +1,6 @@
-<!-- CONEXION -->
 <?php
-
-    session_start();
+ob_start();
+session_start();
 
     $servername = "mysql-db";
     $username = "sea";
