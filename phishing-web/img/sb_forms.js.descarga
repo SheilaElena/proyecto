@@ -1,0 +1,89 @@
+/**
+ * @file
+ * JS file to manage modals.
+ */
+
+(function (Drupal) {
+  Drupal.behaviors.sbForms = {
+    attach: function attach(context, settings) {
+
+      // Change pattern.
+      let storagePatternPhone = localStorage.getItem('pattern-phone-default');
+      const ESPattern = '^[6789]{1}\\d{2}(?!.*(.)\\1{4})\\d{6}$';
+
+      if (storagePatternPhone == "undefined" || storagePatternPhone == null) {
+        let fieldPhoneNumber = context.querySelector('[name$="_phonenumber"]');
+        let field = fieldPhoneNumber;
+        if (fieldPhoneNumber != null && fieldPhoneNumber.length > 1) {
+          field = fieldPhoneNumber.first();
+        }
+        storagePatternPhone = field.getAttribute('pattern');
+        localStorage.setItem('pattern-phone-default', storagePatternPhone);
+      }
+
+      // Initialize country field form as slimselect.
+
+      let residenceCountryFields = context.querySelectorAll('[name$="_residencecountry"]');
+
+      if (residenceCountryFields.length < 1) return;
+
+      const setPhonePattern = (country, phoneField) => {
+        let pattern = storagePatternPhone;
+        if (country === 'ES') {
+          pattern = ESPattern;
+        } else {
+          pattern = storagePatternPhone;
+        }
+        phoneField.setAttribute('pattern', pattern);
+      }
+
+      residenceCountryFields.forEach( select => {
+
+        const data_id = select.getAttribute('data-id');
+        const id = select.getAttribute('id');
+        const selectWrapper = select.closest('.form-type-select');
+        const parentForm = select.closest('form');
+        const phoneNumber = parentForm.querySelector('[name$="_phonenumber"]');
+
+        let country = select.value;
+
+        if (!data_id || (data_id && data_id.indexOf('ss-') != 0)) {
+          new SlimSelect({
+            select: `#${id}`,
+            settings: {
+              contentLocation: selectWrapper,
+              contentPosition: 'relative',
+              showSearch: true,
+              selectByGroup: false,
+              searchPlaceholder: ' ',
+              searchText: Drupal.t("Resultado no encontrado"),
+              searchFilter: (option, search) => {
+                let aux = option.text + " ";
+                return aux.toUpperCase().indexOf(search.toUpperCase()) > -1
+              }
+            },
+            events: {
+              afterChange: () => {
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+              }
+            }
+          });
+        }
+
+        if (!select.classList.contains('sb_form')) {
+
+          setPhonePattern(country, phoneNumber);
+
+          select.addEventListener('change', () => {
+            country = select.value;
+            setPhonePattern(country, phoneNumber);
+          });
+
+          select.classList.add('sb_form');
+        }
+
+      });
+
+    }// End attach
+  };
+})(Drupal);

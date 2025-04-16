@@ -1,0 +1,611 @@
+(function ($, Drupal, drupalSettings, once) {
+  Drupal.behaviors.multiprogramInformationRequest = {
+    attach: function (context, settings) {
+      // Variables globales
+      let programData = null;
+      let specialties = null;
+      let availableKnowledgeAreas = null;
+      const programDataInitial = [];
+
+      function applyToAllForms() {
+        once('sbForms', '.modal-form__button', context).forEach(function (button) {
+          $(button).on('click', function () {
+            setTimeout(() => initializeFormInModal(context), 100);
+          });
+        });
+
+        if (getFormIds(context).length > 0) {
+          setTimeout(() => initializeFormInModal(context), 100);
+        }
+      }
+
+      function getFormIds(context = document) {
+        const regex = /webform-submission-multiprogram-information-request-block-content-(\d+)-add-form/;
+        const forms = $('form', context);
+        return forms.get().reduce((acc, form) => {
+          const match = form.id.match(regex);
+          if (match) {
+            //console.log('FormId encontrado:', form.id);
+            acc.push(form.id);
+          }
+          return acc;
+        }, []);
+      }
+
+      function initializeFormInModal(context) {
+        const formIds = getFormIds(context);
+        formIds.forEach(formId => {
+          const $form = $(`#${formId}`, context);
+          if ($form.length && !$form.data('sb-forms-processed')) {
+            $form.data('sb-forms-processed', true);
+            initializeForm($form, context);
+          }
+        });
+      }
+
+      function initializeForm($form, context) {
+        const selectors = {
+          programType: '[name="multiprogram_information_request_program_type"]',
+          knowledgeArea: '[name="multiprogram_information_request_knowledge_areas"]',
+          interested: '[name="multiprogram_information_request_interested"]',
+          specialty: '[name="multiprogram_information_request_specialty"]'
+        };
+
+        initializeProgramDataInitial();
+        setupFormEventListeners();
+        loadProgramData(updateFormFields);
+
+        function initializeProgramDataInitial() {
+          const $select = $form.find(selectors.interested);
+          if (programDataInitial.length === 0 && $select.length) {
+            Array.from($select[0].options).forEach(option => {
+              if (option.value) programDataInitial.push(option.value);
+            });
+          }
+        }
+
+        function setupFormEventListeners() {
+          $form.find(`${selectors.programType}, ${selectors.knowledgeArea}`)
+            .off('change.sbForms').on('change.sbForms', updateFormFields);
+          $form.find(selectors.interested)
+            .off('change.sbForms').on('change.sbForms', updateSpecialties);
+        }
+
+        function updateFormFields() {
+          updateKnowledgeAreas();
+          updateInterestedOptions();
+          updateSpecialties();
+        }
+
+        function updateKnowledgeAreas() {
+          const $knowledgeAreaSelect = $form.find(selectors.knowledgeArea);
+          const programType = $form.find(selectors.programType).val();
+
+          let optionsRemoved = false;
+
+          $knowledgeAreaSelect.find('option').each(function () {
+            const $option = $(this);
+            if ($option.val() && !isKnowledgeAreaAvailable($option.val(), programType)) {
+              $option.remove();
+              optionsRemoved = true;
+            }
+          });
+
+          if (optionsRemoved) {
+            const currentValue = $knowledgeAreaSelect.val();
+            if (!currentValue || !isKnowledgeAreaAvailable(currentValue, programType)) {
+              const firstAvailable = $knowledgeAreaSelect.find('option:first').val();
+              $knowledgeAreaSelect.val(firstAvailable).trigger('change');
+            }
+          }
+
+          $form.find('.no-areas-available-message').remove();
+        }
+
+        function isKnowledgeAreaAvailable(area, programType) {
+          if (!availableKnowledgeAreas.has(area)) return false;
+          if (!programType) return true;
+          return Object.values(programData).some(program =>
+            (program.knowledge_area === area || program.secondary_knowledge_area === area) &&
+            program.program_type === programType &&
+            programDataInitial.includes(program.nid)
+          );
+        }
+
+        function updateInterestedOptions() {
+          const $interestedSelect = $form.find(selectors.interested);
+          const knowledgeArea = $form.find(selectors.knowledgeArea).val();
+          const programType = $form.find(selectors.programType).val();
+
+          const $defaultOption = $interestedSelect.find('option[value=""]');
+          $interestedSelect.find('option:not([value=""])').remove();
+
+          const filteredOptions = Object.entries(programData)
+            .filter(([nid, program]) => {
+              const matchesProgramType = !programType || program.program_type === programType;
+              const matchesKnowledgeArea = !knowledgeArea ||
+                program.knowledge_area === knowledgeArea ||
+                program.secondary_knowledge_area === knowledgeArea;
+              return matchesProgramType && matchesKnowledgeArea && programDataInitial.includes(nid);
+            })
+            .sort((a, b) => a[1].title.localeCompare(b[1].title));
+
+          filteredOptions.forEach(([nid, program]) => {
+            $interestedSelect.append($('<option>', {
+              value: nid,
+              text: program.title
+            }));
+          });
+
+          if ($defaultOption.length === 0) {
+            $interestedSelect.prepend($('<option>', {
+              value: '',
+              text: '¿Qué programa te interesa? *'
+            }));
+          }
+        }
+
+        function updateSpecialties() {
+          const $specialtySelect = $form.find(selectors.specialty);
+          const $specialtyContainer = $specialtySelect.closest('.js-form-item-multiprogram-information-request-specialty');
+          const $interestedSelect = $form.find(selectors.interested);
+
+          if ($interestedSelect.length === 0) return;
+
+          const selectedProgramId = $interestedSelect.val();
+          const selectedProgram = programData[selectedProgramId];
+
+          const $defaultOption = $specialtySelect.find('option[value=""]');
+          $specialtySelect.find('option:not([value=""])').remove();
+
+          if (selectedProgram?.specialty?.length > 0) {
+            selectedProgram.specialty.forEach(specialtyId => {
+              if (specialties[specialtyId]) {
+                $specialtySelect.append($('<option>', {
+                  value: specialtyId,
+                  text: specialties[specialtyId]
+                }));
+              }
+            });
+            $specialtyContainer.removeClass('d-none');
+          } else {
+            $specialtyContainer.addClass('d-none');
+          }
+
+          if ($defaultOption.length === 0) {
+            $specialtySelect.prepend($('<option>', {
+              value: '',
+              text: 'Especialidades *'
+            }));
+          }
+        }
+      }
+
+      function loadProgramData(callback) {
+        if (programData && specialties && availableKnowledgeAreas) {
+          callback?.();
+          return;
+        }
+
+        const languagePrefix = drupalSettings.currentLanguage.prefix;
+        const currentLanguage = languagePrefix ? `/${languagePrefix}` : '';
+        const baseUrl = (drupalSettings.path.baseUrl || '/').replace(/\/$/, '');
+        const url = `${baseUrl}${currentLanguage}/sb_forms/program-data`.replace(/([^:]\/)\/+/g, "$1");
+
+        $.ajax({
+          url: url,
+          method: 'GET',
+          dataType: 'json',
+          success(data) {
+            ({programs: programData, specialties} = data);
+            availableKnowledgeAreas = calculateAvailableKnowledgeAreas(programData);
+            callback?.();
+          },
+          error(jqXHR, textStatus, errorThrown) {
+            console.error('Error loading program data:', textStatus, errorThrown);
+          }
+        });
+      }
+
+      function calculateAvailableKnowledgeAreas(programs) {
+        return new Set(
+          Object.entries(programs)
+            .filter(([nid]) => programDataInitial.includes(nid))
+            .flatMap(([, program]) => [program.knowledge_area, program.secondary_knowledge_area])
+            .filter(Boolean)
+        );
+      }
+
+      applyToAllForms();
+    }
+  };
+
+  Drupal.behaviors.b2b = {
+    attach: function (context, settings) {
+
+      function checkIsMobile() {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        const width = window.innerWidth;
+        const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+
+        const isMobile = (mobileRegex.test(userAgent) || width <= 768 || 'ontouchstart' in window);
+
+        return isMobile;
+      }
+
+      const isMobile = checkIsMobile();
+
+      // Variables globales
+      let programData = null;
+      let specialties = null;
+      let availableKnowledgeAreas = null;
+      const programDataInitial = [];
+
+      if (isMobile) {
+        once('sbForms', '.modal-form__button', context).forEach(function (button) {
+          $(button).on('click', function () {
+            setTimeout(function () {
+              initializeFormInModal(context);
+            }, 100);
+          });
+        });
+
+        if (getFormId(context)) {
+          setTimeout(function () {
+            initializeFormInModal(context);
+          }, 100);
+        }
+
+        function getFormId(context = document) {
+          const regex = /webform-submission-b2b-block-content-(\d+)-add-form/;
+          const forms = $('form', context);
+          for (let i = 0; i < forms.length; i++) {
+            const match = forms[i].id.match(regex);
+            if (match && match[1] === '3') {
+              return forms[i].id;
+            }
+          }
+          return null;
+        }
+
+        function initializeFormInModal(context) {
+          const formId = getFormId(context);
+          if (!formId && !getFormId(context)) {
+            //  console.warn('No se encontró un formulario válido');
+            return;
+          }
+
+          const $form = formId ? $(`#${formId}`, context) : $('form', context).first();
+          //   console.log('Form found:', $form.length > 0);
+          if (!$form || !$form.length) {
+            //   console.warn('No se pudo encontrar el formulario');
+            return;
+          }
+
+          if (!$form.data('sb-forms-processed')) {
+            $form.data('sb-forms-processed', true);
+            initializeForm($form, context);
+          } else {
+          }
+        }
+
+        function initializeForm($form, context) {
+          const selectors = {
+            knowledgeArea: '#edit-b2b-knowledge-areas--2',
+            interested: '#edit-b2b-interested--2',
+            specialty: '#edit-b2b-specialty--2'
+          };
+
+          function initializeProgramDataInitial() {
+
+            const $select = $form.find(selectors.interested);
+            if (programDataInitial.length === 0 && $select.length) {
+              Array.from($select[0].options).forEach(option => {
+                if (option.value) programDataInitial.push(option.value);
+              });
+            }
+          }
+
+          function setupFormEventListeners() {
+            $form.find(selectors.knowledgeArea).off('change.sbForms').on('change.sbForms', updateFormFields);
+            $form.find(selectors.interested).off('change.sbForms').on('change.sbForms', updateSpecialties);
+          }
+
+          function hideSpecialtyContainer() {
+            $form.find('.js-form-item-b2b-specialty').addClass('d-none');
+          }
+
+          function updateFormFields() {
+            updateKnowledgeAreas();
+            updateInterestedOptions();
+            updateSpecialties();
+          }
+
+          function updateKnowledgeAreas() {
+            const $knowledgeAreaSelect = $form.find(selectors.knowledgeArea);
+            let optionsRemoved = false;
+
+            $knowledgeAreaSelect.find('option').each(function () {
+              const $option = $(this);
+              if ($option.val() && $option.val() !== '') {
+                if (!availableKnowledgeAreas.has($option.val())) {
+                  $option.remove();
+                  optionsRemoved = true;
+                }
+              }
+            });
+
+            if (optionsRemoved) {
+              const currentValue = $knowledgeAreaSelect.val();
+              if (!currentValue || !availableKnowledgeAreas.has(currentValue)) {
+                const firstAvailable = $knowledgeAreaSelect.find('option:first').val();
+                $knowledgeAreaSelect.val(firstAvailable).trigger('change');
+              }
+            }
+          }
+
+          function updateInterestedOptions() {
+            const $interestedSelect = $form.find(selectors.interested);
+            const knowledgeArea = $form.find(selectors.knowledgeArea).val();
+            $interestedSelect.empty().append($('<option>', {
+              value: '',
+              text: '¿Qué programa te interesa? *'
+            }));
+
+            const filteredOptions = Object.entries(programData)
+              .filter(([nid, program]) => {
+                const matchesKnowledgeArea = !knowledgeArea ||
+                  program.knowledge_area === knowledgeArea ||
+                  program.secondary_knowledge_area === knowledgeArea;
+                return matchesKnowledgeArea && programDataInitial.includes(nid);
+              })
+              .sort((a, b) => a[1].title.localeCompare(b[1].title));
+
+            filteredOptions.forEach(([nid, program]) => {
+              $interestedSelect.append($('<option>', {
+                value: nid,
+                text: program.title
+              }));
+            });
+          }
+
+          function updateSpecialties() {
+            const $specialtySelect = $form.find(selectors.specialty);
+            const $specialtyContainer = $specialtySelect.closest('.js-form-item-b2b-specialty');
+            const selectedProgramId = $form.find(selectors.interested).val();
+            const selectedProgram = programData[selectedProgramId];
+
+            $specialtySelect.empty().append($('<option>', {
+              value: '',
+              text: 'Especialidades *'
+            }));
+
+            if (selectedProgram?.specialty?.length > 0) {
+              selectedProgram.specialty.forEach(specialtyId => {
+                if (specialties[specialtyId]) {
+                  $specialtySelect.append($('<option>', {
+                    value: specialtyId,
+                    text: specialties[specialtyId]
+                  }));
+                }
+              });
+              $specialtyContainer.removeClass('d-none');
+            } else {
+              $specialtyContainer.addClass('d-none');
+            }
+          }
+
+          initializeProgramDataInitial();
+          hideSpecialtyContainer();
+          setupFormEventListeners();
+          loadProgramData(() => updateFormFields());
+        }
+
+      } else {
+        //console.log('Running desktop code');
+        once('sbForms', '.modal-form__button', context).forEach(function (button) {
+          $(button).on('click', function () {
+            setTimeout(() => initializeFormInModal(context), 100);
+          });
+        });
+        if (getFormId(context)) {
+          setTimeout(() => initializeFormInModal(context), 100);
+        }
+
+        function initializeFormInModal(context) {
+          const formId = getFormId(context);
+          if (!formId && !getFormId(context)) {
+            //  console.warn('No se encontró un formulario válido');
+            return;
+          }
+          const $form = formId ? $(`#${formId}`, context) : $('form', context).first();
+          if (!$form || !$form.length) {
+            // console.warn('No se pudo encontrar el formulario');
+            return;
+          }
+          if (!$form.data('sb-forms-processed')) {
+            $form.data('sb-forms-processed', true);
+            initializeForm($form, context);
+          }
+        }
+
+        function getFormId(context = document) {
+          const regex = /webform-submission-b2b-block-content-(\d+)-add-form/;
+          const forms = $('form', context);
+          for (let i = 0; i < forms.length; i++) {
+            const match = forms[i].id.match(regex);
+            if (match && match[1] !== '3') {
+              return forms[i].id;
+            }
+          }
+          return null;
+        }
+
+        function initializeForm($form, context) {
+          initializeProgramDataInitial($form);
+          setupFormEventListeners($form);
+          hideSpecialtyContainer($form);
+          loadProgramData(() => updateFormFields($form));
+        }
+
+        function initializeProgramDataInitial($form) {
+          const $select = $form.find('[name="b2b_interested"]');
+          if (programDataInitial.length === 0 && $select.length) {
+            Array.from($select[0].options).forEach(option => {
+              if (option.value) programDataInitial.push(option.value);
+            });
+          }
+        }
+
+        function setupFormEventListeners($form) {
+          $form.find('[name="b2b_program_type"], [name="b2b_knowledge_areas"]')
+            .off('change.sbForms').on('change.sbForms', () => updateFormFields($form));
+
+          $form.find('[name="b2b_interested"]')
+            .off('change.sbForms').on('change.sbForms', () => updateSpecialties($form));
+        }
+
+        function hideSpecialtyContainer($form) {
+          $form.find('.js-form-item-b2b-specialty').addClass('d-none');
+        }
+
+        function updateFormFields($form) {
+          updateKnowledgeAreas($form);
+          updateInterestedOptions($form);
+          updateSpecialties($form);
+        }
+
+        function updateKnowledgeAreas($form) {
+          const $knowledgeAreaSelect = $form.find('[name="b2b_knowledge_areas"]');
+          const programType = $form.find('[name="b2b_program_type"]').val();
+
+          let optionsRemoved = false;
+
+          $knowledgeAreaSelect.find('option').each(function () {
+            const $option = $(this);
+            if ($option.val() && $option.val() !== '') {
+              if (!isKnowledgeAreaAvailable($option.val(), programType)) {
+                $option.remove();
+                optionsRemoved = true;
+              }
+            }
+          });
+
+          if (optionsRemoved) {
+            const currentValue = $knowledgeAreaSelect.val();
+            if (!currentValue || !isKnowledgeAreaAvailable(currentValue, programType)) {
+              const firstAvailable = $knowledgeAreaSelect.find('option:first').val();
+              $knowledgeAreaSelect.val(firstAvailable).trigger('change');
+            }
+          }
+
+          $form.find('.no-areas-available-message').remove();
+        }
+
+        function isKnowledgeAreaAvailable(area, programType) {
+          if (!availableKnowledgeAreas.has(area)) return false;
+          if (!programType) return true;
+          return Object.values(programData).some(program =>
+            (program.knowledge_area === area || program.secondary_knowledge_area === area) &&
+            program.program_type === programType &&
+            programDataInitial.includes(program.nid)
+          );
+        }
+
+        function updateInterestedOptions($form) {
+          const $interestedSelect = $form.find('[name="b2b_interested"]');
+          const knowledgeArea = $form.find('[name="b2b_knowledge_areas"]').val();
+          const programType = $form.find('[name="b2b_program_type"]').val();
+
+          $interestedSelect.empty().append($('<option>', {
+            value: '',
+            text: '¿Qué programa te interesa? *'
+          }));
+
+          const filteredOptions = Object.entries(programData)
+            .filter(([nid, program]) => {
+              const matchesProgramType = !programType || program.program_type === programType;
+              const matchesKnowledgeArea = !knowledgeArea ||
+                program.knowledge_area === knowledgeArea ||
+                program.secondary_knowledge_area === knowledgeArea;
+              return matchesProgramType && matchesKnowledgeArea && programDataInitial.includes(nid);
+            })
+            .sort((a, b) => a[1].title.localeCompare(b[1].title));
+
+          filteredOptions.forEach(([nid, program]) => {
+            $interestedSelect.append($('<option>', {
+              value: nid,
+              text: program.title
+            }));
+          });
+        }
+
+        function updateSpecialties($form) {
+          const $specialtySelect = $form.find('[name="b2b_specialty"]');
+          const $specialtyContainer = $specialtySelect.closest('.js-form-item-b2b-specialty');
+          const selectedProgramId = $form.find('[name="b2b_interested"]').val();
+          const selectedProgram = programData[selectedProgramId];
+
+          $specialtySelect.empty().append($('<option>', {
+            value: '',
+            text: 'Especialidades *'
+          }));
+
+          if (selectedProgram?.specialty?.length > 0) {
+            selectedProgram.specialty.forEach(specialtyId => {
+              if (specialties[specialtyId]) {
+                $specialtySelect.append($('<option>', {
+                  value: specialtyId,
+                  text: specialties[specialtyId]
+                }));
+              }
+            });
+            $specialtyContainer.removeClass('d-none');
+          } else {
+            $specialtyContainer.addClass('d-none');
+          }
+        }
+      }
+
+      // Función común para cargar los datos del programa
+      function loadProgramData(callback) {
+        if (programData && specialties && availableKnowledgeAreas) {
+          callback?.();
+          return;
+        }
+        // Obtener el código de idioma actual
+        var currentLanguage = drupalSettings.currentLanguage;
+        // console.log('Current language code:', currentLanguage);
+
+        // Construir la URL con el código de idioma
+        var baseUrl = drupalSettings.path.baseUrl || '/';
+        var url = baseUrl + currentLanguage + '/sb_forms/program-data';
+
+        $.ajax({
+          url: url,
+          method: 'GET',
+          dataType: 'json',
+          success(data) {
+            ({programs: programData, specialties} = data);
+            availableKnowledgeAreas = calculateAvailableKnowledgeAreas(programData);
+            callback?.();
+          },
+          error(jqXHR, textStatus, errorThrown) {
+            console.error('Error loading program data:', textStatus, errorThrown);
+          }
+        });
+      }
+
+      function calculateAvailableKnowledgeAreas(programs) {
+        const areas = new Set();
+        Object.entries(programs).forEach(([nid, program]) => {
+          if (programDataInitial.includes(nid)) {
+            if (program.knowledge_area) areas.add(program.knowledge_area);
+            if (program.secondary_knowledge_area) areas.add(program.secondary_knowledge_area);
+          }
+        });
+        return areas;
+      }
+    }
+  };
+})(jQuery, Drupal, drupalSettings, once);

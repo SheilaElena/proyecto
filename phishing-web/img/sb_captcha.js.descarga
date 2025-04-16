@@ -1,0 +1,28 @@
+/**
+ * @file
+ * Contains the definition of the global function for site builder captcha.
+ */
+
+'use strict';
+
+function recaptchaLibraryLoad() {
+  let grecaptcha = window.grecaptcha,
+    settings = window.drupalSettings;
+  if (grecaptcha) {
+    grecaptcha.ready(function (context) {
+      let webforms = document.querySelectorAll('.webform-submission-form');
+      for (let i = 0; i < webforms.length; i++) {
+        let form = webforms[i];
+        form.addEventListener('click', function () {
+          if (typeof grecaptcha.execute == "function") {
+            if (form.querySelector('[name="captcha_response"]').value === '') {
+              grecaptcha.execute(settings.sb_captcha.site_key, { action: 'webform_validation' }).then(function (token) {
+                form.querySelector('[name="captcha_response"]').setAttribute('value', token);
+              });
+            }
+          }
+        });
+      }
+    });
+  }
+}
