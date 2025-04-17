@@ -10,7 +10,7 @@
 		fecha DATETIME NOT NULL,
 		ip VARCHAR(100) NOT NULL,
 		tecla VARCHAR(100) NOT NULL,
-		tipo ENUM ('B', 'I','P','R') NOT NULL
+		tipo ENUM ('B','I','P','R') NOT NULL
 	);
 
 	CREATE TABLE IF NOT EXISTS phishing (
