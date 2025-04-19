@@ -1,5 +1,5 @@
 <?php
-    ob_start();
+    ob_start(); // Habilita el buffer de salida
     session_start();
 
 

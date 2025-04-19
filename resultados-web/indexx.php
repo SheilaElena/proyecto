@@ -1,64 +1,40 @@
-<!-- CONEXION -->
 <?php
+session_start();
 
-  session_start();
+$servername = "mysql-db";
+$username = "sea";
+$password = "proyectose@";
+$database = "bd_keyloggers";
 
-  $servername = "mysql-db";
-  $username = "sea";
-  $password = "proyectose@";
-  $database = "bd_keyloggers";
-  
-      // Creamos la conexion y seleccionamos la base de datos
-      $conn = mysqli_connect($servername, $username, $password, $database);
-      // Check connection
-      if (!$conn) {
-          die("Conexion fallida: " . mysqli_connect_error());
-      }
+// Conexión
+$conn = mysqli_connect($servername, $username, $password, $database);
+if (!$conn) {
+    die("Conexion fallida: " . mysqli_connect_error());
+}
 
-  /*
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['IniciarSesion'])) {
+    $nombre = $_POST['nombre'];
+    $contrasena = $_POST['contrasena'];
 
-    $servername = "mysql-db";
-    $username = "sea";
-    $password = "proyectose@";
-    $database = "bd_keyloggers";
+    $sql = "SELECT * FROM usuario WHERE nombre = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, 's', $nombre);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
-    */
-?>
-
-<?php
-            
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['IniciarSesion'])) {
-        $nombre =  $_POST['nombre'];
-        $contrasena =  $_POST['contrasena'];
-    
-        $sql = "SELECT * FROM usuario WHERE nombre = ?";
-        $stmt = mysqli_prepare($conn, $sql);
-
-
-        mysqli_stmt_bind_param($stmt, 's', $nombre);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-
-        if ($result && mysqli_num_rows($result) > 0) {
-            $row = mysqli_fetch_assoc($result);
-            if ($contrasena === $row['contrasena']) {
-                // Establecer nueva sesión con los datos del usuario
-                $_SESSION['nombre'] = $row['nombre'];
-                $_SESSION['contrasena'] = $row['contrasena'];
-    
-                // Redirigir según el tipo de usuario
-                if ($_SESSION['nombre'] === $row['nombre']) {
-                    header("Location: php/opciones.php");
-                }
-                exit;
-            } else {
-                echo "<script>alert('Datos incorrectos');</script>";
-            }
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        if ($contrasena === $row['contrasena']) {
+            $_SESSION['nombre'] = $row['nombre'];
+            $_SESSION['contrasena'] = $row['contrasena'];
+            header("Location: php/opciones.php");
+            exit;
+        } else {
+            echo "<script>alert('Datos incorrectos');</script>";
         }
     }
-    ?>
-
-
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -68,7 +44,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Overpass&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="css/inicio.css">
+        <link rel="stylesheet" href="/css/inicio.css">
         <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     </head>
