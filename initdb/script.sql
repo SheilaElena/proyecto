@@ -19,7 +19,6 @@
 		ip VARCHAR(100) NOT NULL,
 		nombreapellido VARCHAR(100) NOT NULL,
 		email VARCHAR(100) NOT NULL,
-		provincia VARCHAR(100) NOT NULL,
 		telefono VARCHAR(100) NOT NULL
 	);
 
