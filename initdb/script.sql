@@ -17,7 +17,7 @@
 		id INT AUTO_INCREMENT PRIMARY KEY,
 		fecha VARCHAR(100) NOT NULL,
 		ip VARCHAR(100) NOT NULL,
-		nombreapellido VARCHAR(100) NOT NULL,
+		nombre_apellidos VARCHAR(100) NOT NULL,
 		email VARCHAR(100) NOT NULL,
 		telefono VARCHAR(100) NOT NULL
 	);
