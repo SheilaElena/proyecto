@@ -5,6 +5,7 @@ from flask_cors import CORS
 import mysql.connector
 
 from datetime import datetime
+import pytz #Hora Española
 
 
 app = Flask(__name__)
@@ -48,9 +49,11 @@ def guardar_formulario():
 
     telefono = data.get("telefono")
 
-    ip_cliente = request.remote_addr
+    ip_cliente = request.headers.get("X-Forwarded-For") or request.remote_addr
 
-    fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    zona = pytz.timezone('Europe/Madrid')
+    fecha = datetime.now(zona).strftime('%Y-%m-%d %H:%M:%S')
+
 
 
     if not nombre_apellidos or not email or not telefono:
@@ -115,9 +118,11 @@ def guardar_bashbunny():
 
     datos = data.get("datos")
 
-    ip_cliente = request.remote_addr
+    ip_cliente = request.headers.get("X-Forwarded-For") or request.remote_addr
 
-    fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    zona = pytz.timezone('Europe/Madrid')
+    fecha = datetime.now(zona).strftime('%Y-%m-%d %H:%M:%S')
+
 
 
     if not datos:
@@ -171,8 +176,7 @@ def guardar_email():
 
     datosI = data.get("datosI")
 
-    ip_cliente = request.remote_addr
-
+    ip_cliente = request.headers.get("X-Forwarded-For") or request.remote_addr
 
     if not datosI:
 
@@ -225,7 +229,8 @@ def guardar_img():
 
     datosImg = data.get("datosImg")
 
-    IP_cliente = request.remote_addr
+    IP_cliente = request.headers.get("X-Forwarded-For") or request.remote_addr
+
 
 
     if not datosImg:
@@ -267,4 +272,3 @@ def guardar_img():
 if __name__ == '__main__':
 
     app.run(host='0.0.0.0', port=5000)
-
