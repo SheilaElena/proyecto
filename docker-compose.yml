@@ -1,52 +1,121 @@
 version: '3.8'
 
+
 services:
+
   initdb:
+
     image: mysql:latest
+
     container_name: mysql-db
+
     restart: always
+
     environment:
+
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
       MYSQL_DATABASE: ${MYSQL_DATABASE}
+
       MYSQL_USER: ${MYSQL_USER}
+
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
     ports:
+
       - "3306:3306"
+
     volumes:
+
       - ./initdb:/docker-entrypoint-initdb.d
+
       - ./mysql-config/my.cnf:/etc/my.cnf
 
     networks:
+
       - mynetwork
+
 
   php-fpm:
+
     build:
+
       context: ./php-fpm
+
       dockerfile: Dockerfile
+
     container_name: php-fpm
+
     volumes:
+
       - ./resultados-web:/var/www/html
+
     networks:
+
       - mynetwork
+
 
   nginx:
+
     container_name: proyecto-nginx
+
     build:
+
       context: ./nginx
+
     restart: always
+
     ports:
+
       - "80:80"
+
     depends_on:
+
       - php-fpm
+
       - initdb
+
     volumes:
-    - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-    - ./nginx/conf.d:/etc/nginx/conf.d:ro
-    - ./resultados-web:/var/www/html
-    - ./phishing-web:/usr/share/nginx/html
+
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+
+      - ./resultados-web:/var/www/html
+
+      - ./phishing-web:/usr/share/nginx/html
+
     networks:
+
       - mynetwork
 
+
+  flask:
+
+    build:
+
+      context: ./python
+
+      dockerfile: Dockerfile
+
+    container_name: flask-app
+
+    ports:
+
+      - "5000:5000"  # Para exponer el serviodr al exterior
+
+    depends_on:
+
+      - initdb
+
+    networks:
+
+      - mynetwork
+
+
 networks:
+
   mynetwork:
+
     driver: bridge
+

