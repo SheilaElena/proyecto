@@ -107,9 +107,8 @@
                                     echo'<br>';
                                     echo '<div class="cajita">';
                                         echo '<li>Realizado el día: '.$row['fecha'].'</li>';
-                                        echo '<h5>Nombre y apellido: '.$row['nombreapellido'].'</h5>';
+                                        echo '<h5>Nombre y apellido: '.$row['nombre_apellidos'].'</h5>';
                                         echo '<h5>Correo: '.$row['email'].'</h5>';
-                                        echo '<h5>Provincia: '.$row['provincia'].'</h5>';
                                         echo '<h5>Teléfono: '.$row['telefono'].'</h5>';
                                     echo '</div>';     
                                     $Final++;
