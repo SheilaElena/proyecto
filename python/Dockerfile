@@ -1,44 +1,42 @@
-#Exportamos la imagen estable mas reciente
+# Exportamos la imagen estable más reciente
+
 FROM python:latest
 
-# Copiamos los archivos de la aplicación (fijate en las rutas)
+
+# Instalamos tzdata para soportar zonas horarias como Europe/Madrid
+
+RUN apt-get update && apt-get install -y tzdata
+
+
+# Fijamos la zona horaria manualmente para evitar prompts
+
+ENV TZ=Europe/Madrid
+
+
+# Copiamos los archivos de la aplicación
+
 WORKDIR /app
+
 COPY . /app
 
-# Instala dependencias a partir del txt de antes
+
+# Instalamos las dependencias de Python
+
 RUN pip install --no-cache-dir -r requirements.txt
-# O bien puedes usar la siguiente sentencia que hace lo mismo:
+
+# O bien puedes usar esta si no tienes requirements.txt:
+
 # RUN pip install --no-cache-dir flask mysql-connector-python
 
-# Exponemos el puerto de Flask
+
+# Exponemos los puertos que pueda usar Flask
+
 EXPOSE 5000
+
 EXPOSE 5001
 
+
 # Comando para iniciar la aplicación
+
 CMD ["python", "app.py"]
 
-
-# FROM php:8.1-fpm
-
-# Instalar extensiones necesarias
-# RUN apt-get update && apt-get install -y \
-#    libpng-dev \
-#    libjpeg-dev \
-#    libfreetype6-dev \
-#    libonig-dev \
-#    libzip-dev \
-#    unzip \
-#    && docker-php-ext-install mysqli pdo pdo_mysql gd mbstring zip
-
-# Copiar la configuración de PHP (si tienes un php.ini personalizado)
-# COPY php.ini /usr/local/etc/php/
-
-# Copiar la aplicación al contenedor
-# COPY . /var/www/html/
-
-# Establecer permisos
-# RUN chown -R www-data:www-data /var/www/html \
-    # && chmod -R 755 /var/www/html
-
-# EXPOSE 9000
-# CMD ["php-fpm"]
