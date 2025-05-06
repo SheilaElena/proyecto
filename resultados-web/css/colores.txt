@@ -1,0 +1,77 @@
+Fondo:
+    background: #f1eeee;
+
+html, body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background: #f1eeee;
+    height: 100%;
+    font-family: "Poppins", sans-serif;
+}
+main {
+    flex: 1; /* Esto hace que el main crezca para llenar el espacio disponible */
+}
+
+Cabecera / footer:
+    background: linear-gradient(to right, #5b5b5b,#2d2c2d);
+
+
+Colores letra:
+    Títulos: color: #333;
+    Sbtitulos: color: #666;
+
+Botones:
+#management-section .card a:hover {
+    background: #3c3c3c;
+    transform: scale(1.05);
+}
+
+/* Ajuste de separación general entre tarjetas */
+#management-section .card {
+    margin: 10px;
+}
+
+
+FAFA
+/*Colores FA FA*/
+#management-section .card i {
+    /*color: #536895; 606e8c; 7f69a5; 8673a1; 6576b4;*/
+    color: #6576b4;
+    margin-bottom: 20px;
+    font-size: 3rem;
+}
+
+TITULOS AZULES
+#management-section h1 {
+    /*color: #536895; 606e8c; 7f69a5; 8673a1; 6576b4;*/
+    color: #2d3a68;
+    margin-bottom: 25px;
+    font-family: "Poppins", sans-serif;
+}
+
+
+/*Enlaces a otras paginas de las cabeceras*/
+#header nav ul li a:hover {
+    background: #6576b4;
+    color: #2d3a68;
+    transform: scale(1.1);
+}
+ 
+
+
+hr.highlight {
+height: 0.30rem;
+width: 6rem;
+background: #606e8c;
+margin: 0 auto 20px;
+margin-top: 20px;
+}
+
+
+#management-section {
+    padding: 160px 70px;
+    text-align: center;
+    background: #f1eeee;
+    font-family: "Poppins", sans-serif;    
+}

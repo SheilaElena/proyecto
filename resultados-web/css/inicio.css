@@ -1,0 +1,525 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*, *:before, *:after {
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html, body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: "Poppins", sans-serif;
+    background: #f1eeee;
+
+}
+
+main {
+    flex: 1; /* Esto hace que el main crezca para llenar el espacio disponible */
+}
+
+/* Footer permanece al final */
+footer {
+    background: linear-gradient(to right, #5b5b5b, #2d2c2d);
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    width: 100%;
+    font-family: "Poppins", sans-serif;
+}
+
+footer p {
+    margin: 10px 0;
+}
+
+
+.Contenedor_Inicio {
+    max-width: 60em;
+    min-width: 45em;
+    margin: 0 auto;
+    padding: 0 2em;
+  }
+
+  .Contenedor_Inicio .frase_inicio{
+    text-align: center; 
+    font-size: 20px;
+}
+
+        
+.Inicio_fondoo {
+    position: relative;
+    background: url("../img/iniciofoto.jpg");
+    background-position: center;
+    background-size: cover;
+    padding: 10em 0 8em;
+    z-index: 2;
+  }
+  
+  .Inicio_fondoo h1 {
+    font-size: 4em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+/*CABECERA - header*/
+        #header {
+            background: linear-gradient(to right, #5b5b5b, #2d2c2d);
+            color: white;
+            display: flex; /* Usamos Flexbox para centrar los elementos */
+            justify-content: space-between; /* Mantiene elementos separados en los extremos */
+            align-items: center; /* Centra verticalmente los elementos */
+            padding: 15px 50px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            font-family: "Poppins", sans-serif;
+            text-transform: uppercase;
+            height: 100px;
+        }
+
+        #header .logo {
+            display: flex; /* Activamos Flexbox */
+            justify-content: center; /* Centra horizontalmente el logo */
+            align-items: center; /* Centra verticalmente el logo */
+        }
+
+        #header .logo img {
+            max-width: 85px; /* Mantiene el tamaño máximo del logo */
+        /*   height: auto; Asegura que la proporción del logo sea correcta */
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            form {
+                grid-template-columns: 1fr;
+            }
+
+            #header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+        }
+
+
+/*CSS DE GESTION DE CLIENTES*/
+/* General Body Styling */
+.CAJAgrandeCLI{
+    height: 727px;
+}
+.gestioncliente { 
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0e9e6; /* Fondo claro */
+    color: #5c5346;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+/* Contenedor Principal */
+#listado-clientes { 
+    flex: 1; /* Hace que el contenido principal ocupe el espacio disponible */
+}
+
+/* Título Principal */
+.titulos {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #5c5346;
+    margin: 40px 0;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.titulos::after {
+    content: '';
+    display: block;
+    width: 100px;
+    height: 4px;
+    background: #5c5346; /* Línea roja debajo del título */
+    margin: 10px auto;
+}
+
+/* Contenedor de Tarjetas */
+#fondo_listado {
+    max-width: 1200px;
+    margin: auto;
+    padding: 40px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px; /* Espaciado entre tarjetas */
+    justify-content: center;
+}
+
+/* Tarjetas */
+.cliente-contenedor {
+    background-color: #ffffff; /* Fondo blanco */
+    border-radius: 15px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    width: 300px; /* Ancho fijo de las tarjetas */
+    padding: 21px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-family: "Poppins", sans-serif;
+}
+
+.cliente-contenedor:hover {
+    transform: translateY(-10px); /* Efecto flotante */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cliente-contenedor h1 {
+    font-size: 1.8rem;
+    color: #2d3a68; /* Título en rojo */
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-family: "Poppins", sans-serif;
+}
+
+.cliente-contenedor p {
+    font-size: 1rem;
+    color: #7b6f62; /* Texto gris */
+    margin-bottom: 10px;
+    font-family: "Poppins", sans-serif;
+}
+
+/* Botones */
+.cliente-contenedor a {
+    display: inline-block;
+    margin: 10px 5px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+    transition: all 0.3s;
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+}
+
+/* Botón Modificar */
+.cliente-contenedor .acciones {
+    background-color: #6576b4; /* Azul suave */
+    color: #ffffff; /* Texto blanco */
+    font-size: 1.0rem; /*tamaño*/
+    font-family: "Poppins", sans-serif;
+    padding: 3px;
+    border-radius: 5px;
+}
+
+.cliente-contenedor .acciones:hover {
+    background-color: #2d3a68; /* Hover azul más oscuro */
+    color: #ffffff;
+    font-family: "Poppins", sans-serif;
+}
+
+.cliente-contenedor .acciones a{
+    background-color: #6576b4; /* Texto blanco */
+    font-family: "Poppins", sans-serif;
+
+}
+
+.form-container{
+    padding-bottom: 16px;
+}
+
+.login-container{
+    display: flex;
+    justify-content: center;
+    padding-top: 16px;
+}
+
+.enlaceess{
+    display: flex;
+    justify-content: center;
+    padding-top: 16px;
+}
+
+
+.explicacionQueVasAEncontrar {
+    margin-bottom: var(--space-md);
+    display: flex; /* Flexbox para centrar */
+    flex-direction: column; /* Asegura que el contenido se apile verticalmente */
+    justify-content: center; /* Centrado vertical */
+    align-items: center; /* Centrado horizontal */
+    }
+    
+    .GlobalInfoNuestra {
+    max-width: 60rem;
+    padding: unset;
+    }
+    
+
+    
+    hr.highlight {
+    height: 0.30rem;
+    width: 6rem;
+    background: #606e8c;
+    margin: 0 auto 20px;
+    margin-top: 20px;
+    }
+    
+
+
+    /*Inicio Nombre*/
+    .inicioportada {
+    text-align: center;
+    color: #000000;
+    background-attachment: scroll;
+    background-image: url('../img/iniciofoto.jpg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+    }
+    
+    .inicioportada .textosportada {
+    padding-top: 100px;
+    padding-bottom: 50px;
+    }
+    
+    .inicioportada .textosportada .textobienvenida {
+    margin-bottom: 25px;
+    font-family: "Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 22px;
+    font-style: italic;
+    line-height: 22px;
+    }
+    
+    .inicioportada .textosportada .coachingsl {
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 50px;
+    font-weight: 700;
+    line-height: 50px;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+    /* General Container Styling */
+    #uses {
+        padding: 20px;
+        height: auto; /* Elimina la altura fija */
+    }
+    
+    .GlobalApartadosInfo {
+        gap: 15px; /* Reduce el espacio entre tarjetas */
+    }
+    
+    .GlobalApartadosInfo li {
+        max-width: 100%; /* Ocupan el 100% del ancho */
+        flex: 1 1 100%; /* Una tarjeta por fila */
+    }
+    
+    /* Títulos más pequeños */
+    .TitulosApartados {
+        font-size: 1rem;
+    }
+    
+    /* Texto más compacto */
+    .TextExplApartados p {
+        font-size: 0.85rem;
+    }
+    
+    /* FA FA más pequeños */
+    .lock-icon {
+        font-size: 1.5rem;
+        padding-bottom: 3%;
+        padding-top: 3%;
+    }
+    
+    /* Ajuste de la portada */
+    .inicioportada .textosportada {
+        padding-top: 50px;
+        padding-bottom: 30px;
+    }
+    
+    .inicioportada .textosportada .textobienvenida {
+        font-size: 18px; /* Reduce el tamaño del texto */
+        line-height: 20px;
+    }
+    
+    .inicioportada .textosportada .coachingsl {
+        font-size: 32px; /* Reduce el tamaño del título */
+        line-height: 36px;
+    }
+    
+    /* Centrar el texto de bienvenida */
+    .inicioportada {
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .highlight {
+        width: 40px; /* Línea más pequeña */
+        height: 3px;
+    }
+    
+    /* Cajas de información (centradas y adaptables) */
+    .cajatiposcoacing {
+        width: 100%; /* Ocupan el ancho completo */
+        margin-right: 0;
+    }
+    
+    .coaching_columnas {
+        flex-direction: column; /* Cambia a una columna en lugar de filas */
+    }
+    }
+
+
+    #about {
+        background: #f1eeee;
+        padding: 10px 0px;
+      }
+      
+      #about p {
+        line-height: 2em;
+        font-size: 0.8em;
+        margin: 0;
+        color: #222;
+      }
+      .explicacionQueVasAEncontrar {
+          text-align: center;
+      }
+
+      .historia{
+        color: #2d3a68;
+        margin-top: 32px;
+        width: 100%;
+        margin-bottom: 12px;
+        text-align: center;
+      }
+
+      .keylogger{
+        color: #2d3a68;
+        width: 100%;
+        margin-bottom: 12px;
+        text-align: center;
+      }
+
+
+
+      /* Estilo base para el contenedor */
+      .GlobalApartadosInfo {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 20px;
+          list-style-type: none;
+          padding: 0;
+          margin: 0;
+          max-width: 1200px; /* Ancho máximo del contenedor */
+          margin: 0 auto; /* Centrar en la página */
+      }
+      
+      /* Estilo para cada elemento de la lista */
+      .GlobalApartadosInfo li {
+          background-color: #f9f9f9;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          padding: 20px;
+          text-align: center;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          width: 100%; /* Se adaptará al tamaño del grid */
+          max-width: 550px; /* Ancho máximo por elemento */
+          margin: 0 auto; /* Centrar dentro de la celda */
+      }
+
+      /* Estilo para los íconos */
+      .GlobalApartadosInfo li .lock-icon {
+          font-size: 2.5rem;
+          margin-bottom: 10px;
+          color: #555;
+      }
+      
+      /* Título dentro del elemento */
+      .TitulosApartados {
+          font-size: 1.3rem;
+          font-weight: bold;
+          margin: 10px 0;
+          color: #333;
+      }
+      
+      /* Texto descriptivo */
+      .TextExplApartados p {
+          font-size: 1.2rem;
+          color: #666;
+          margin: 0;
+      }
+      
+      /* Animación al pasar el mouse */
+      .GlobalApartadosInfo li:hover {
+          transform: scale(1.05);
+          box-shadow: 0 4px 10px #6576b4;
+          background-color: #f1f1f1;
+      }
+      
+      /* Responsividad */
+      @media (max-width: 1024px) {
+          .GlobalApartadosInfo {
+              grid-template-columns: repeat(1, 1fr);
+          }
+      }
+      
+      @media (max-width: 768px) {
+          .GlobalApartadosInfo {
+              grid-template-columns: 1fr;
+          }
+      }
+
+
+      @media (max-width: 768px) {
+        .cliente-contenedor {
+          flex: 1 1 100%;
+          max-width: 100%;
+        }
+      }
+      
+    input[type="text"] {
+        font-size: 1rem; /*tamaño*/
+        margin-bottom: 8px;
+    }
+
+    input[type="password"] {
+        font-size: 1rem; /*tamño*/
+        margin-bottom: 8px;
+    }
+
+    .TextExplApartados img {
+        max-width: 66%;
+        height: auto;
+        display: block;
+        margin: 0 auto; /* Centra horizontalmente */
+        border-radius: 8px; /* Esquinas redondeadas */
+        object-fit: contain; /* Evita que se deforme */ 
+    }
+
+
+    .botonOcultar {
+        padding: 10px 16px;
+        background-color: #6576b4;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 22px 0;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        font-family: "Poppins", sans-serif;
+    }
+
+
+    .botonOcultar:hover {
+        background-color: #2d3a68;
+    }
+
+
