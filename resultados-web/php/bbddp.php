@@ -88,7 +88,7 @@
                                     echo'<br>';
                                     echo '<div class="cajita">';
                                         echo '<li>Realizado el día: '.$row['fecha'].'</li>';
-                                        echo '<p>Nombre y apellido: '.$row['nombre_apellido'].'</p>';
+                                        echo '<p>Nombre y apellido: '.$row['nombre_apellidos'].'</p>';
                                         echo '<p>Correo: '.$row['email'].'</p>';
                                         echo '<p>Teléfono: '.$row['telefono'].'</p>';
                                     echo '</div>';     

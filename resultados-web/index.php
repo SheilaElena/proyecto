@@ -2,7 +2,7 @@
 
   session_start();
 
-  $servername = "localhost";
+  $servername = "mysql-db";
   $username = "sea";
   $password = "proyectose@";
   $database = "bd_keyloggers";
@@ -13,62 +13,36 @@
       if (!$conn) {
           die("Conexion fallida: " . mysqli_connect_error());
       }
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['IniciarSesion'])) {
+        $nombre =  $_POST['nombre'];
+        $contrasena =  $_POST['contrasena'];
+    
+        $sql = "SELECT * FROM usuario WHERE nombre = ?";
+        $stmt = mysqli_prepare($conn, $sql);
 
-    /*
-    $servername = "mysql-db";
-    $username = "sea";
-    $password = "proyectose@";
-    $database = "bd_keyloggers";
-    */
-?>
 
-<?php
-            
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['IniciarSesion'])) {
-                $nombre = trim($_POST['nombre']);
-                $contrasena = $_POST['contrasena'];
-            
-                $sql = "SELECT * FROM usuario WHERE nombre = ?";
-                $stmt = mysqli_prepare($conn, $sql);
-                mysqli_stmt_bind_param($stmt, 's', $nombre);
-                mysqli_stmt_execute($stmt);
-                $result = mysqli_stmt_get_result($stmt);
-            
-                if ($result && mysqli_num_rows($result) > 0) {
-                    $row = mysqli_fetch_assoc($result);
-                    $hashDB = $row['contrasena'];
-            
-                    // CASO 1: Ya está cifrada con password_hash
-                    if (password_verify($contrasena, $hashDB)) {
-                        session_regenerate_id(true);
-                        $_SESSION['nombre'] = $row['nombre'];
-                        header("Location: php/opciones.php");
-                        exit;
-                    }
-            
-                    // CASO 2: Comparar como texto plano (usuarios antiguos)
-                    elseif ($contrasena === $hashDB) {
-                        // Migrar contraseña a formato seguro
-                        $nuevo_hash = password_hash($contrasena, PASSWORD_DEFAULT);
-                        $update = mysqli_prepare($conn, "UPDATE usuario SET contrasena = ? WHERE nombre = ?");
-                        mysqli_stmt_bind_param($update, 'ss', $nuevo_hash, $nombre);
-                        mysqli_stmt_execute($update);
-            
-                        session_regenerate_id(true);
-                        $_SESSION['nombre'] = $row['nombre'];
-                        header("Location: php/opciones.php");
-                        exit;
-                    }
-            
-                    // Contraseña incorrecta
-                    else {
-                        echo "<script>alert('Nombre o contraseña incorrectos');</script>";
-                    }
-                } else {
-                    echo "<script>alert('Nombre o contraseña incorrectos');</script>";
+        mysqli_stmt_bind_param($stmt, 's', $nombre);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+            if ($contrasena === $row['contrasena']) {
+                // Establecer nueva sesión con los datos del usuario
+                $_SESSION['nombre'] = $row['nombre'];
+                $_SESSION['contrasena'] = $row['contrasena'];
+    
+                // Redirigir según el tipo de usuario
+                if ($_SESSION['nombre'] === $row['nombre']) {
+                    header("Location: php/opciones.php");
                 }
+                exit;
+            } else {
+                echo "<script>alert('Datos incorrectos');</script>";
             }
-            ?>
+        }
+    }
+    ?>
 
 
 <!DOCTYPE html>

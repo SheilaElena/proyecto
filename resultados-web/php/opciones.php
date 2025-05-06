@@ -1,6 +1,6 @@
 <?php
-    ob_start(); // Habilita el buffer de salida
-session_start();
+	ob_start(); // Habilita el buffer de salida
+	session_start();
 
 $servername = "mysql-db";
 $username = "sea";
