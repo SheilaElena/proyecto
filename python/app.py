@@ -6,23 +6,29 @@ from datetime import datetime
 import pytz
 import mysql.connector
 import os
+from dotenv import load_dotenv
+from pathlib import Path
+
+# Cargar .env desde la raíz del proyecto
+env_path = Path(__file__).resolve().parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
 
 app = Flask(__name__)
 
-# 3. Cabeceras seguras con Talisman
+# Cabeceras seguras con Talisman
 Talisman(app)
 
-# 5. Logging de errores
+# Logging de errores
 logging.basicConfig(level=logging.ERROR)
 
-# 1. Variables de entorno para la base de datos
-# 7. Reutilización del código de conexión
+# Variables de entorno para la base de datos
+# Reutilización del código de conexión
 
 db_config = {
-    "host": os.getenv("DB_HOST"),
-    "user": os.getenv("DB_USER"),
-    "password": os.getenv("DB_PASSWORD"),
-    "database": os.getenv("DB_NAME")
+    "host": os.getenv("MYSQL_HOST"),
+    "user": os.getenv("MYSQL_USER"),
+    "password": os.getenv("MYSQL_PASSWORD"),
+    "database": os.getenv("MYSQL_DATABASE")
 }
 
 def conectar_mysql():
@@ -51,7 +57,7 @@ def guardar_formulario():
         query = "INSERT INTO phishing (fecha, ip, nombre_apellidos, email, telefono) VALUES (%s, %s, %s, %s, %s)"
         cursor.execute(query, (fecha, ip_cliente, nombre_apellidos, email, telefono))
         conexion.commit()
-        return jsonify({"mensaje": "Formulario guardado correctamente"})
+        return jsonify({"mensaje": f"Formulario guardado correctamente para {nombre_apellidos}"})
     except mysql.connector.Error as error:
         logging.error(f"DB Error: {error}")
         return jsonify({"error": "Error interno"}), 500
