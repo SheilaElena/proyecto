@@ -1,0 +1,260 @@
+/*FONDO DE PANTALLA*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*, *:before, *:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding:0;
+    margin:0;
+}
+ 
+/*CABECERA - header*/
+#header {
+    background: linear-gradient(to right, #5b5b5b,#2d2c2d);
+    color: white;
+    display: flex; /* Usamos Flexbox para centrar los elementos */
+    justify-content: space-between; /* Mantiene elementos separados en los extremos */
+    align-items: center; /* Centra verticalmente los elementos */
+    padding: 15px 50px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: "Poppins", sans-serif;
+    text-transform: uppercase;
+    height: 100px;
+}
+
+#header .logo {
+    display: flex; /* Activamos Flexbox */
+    justify-content: center; /* Centra horizontalmente el logo */
+    align-items: center; /* Centra verticalmente el logo */
+}
+
+#header .logo img {
+    max-width: 85px; /* Mantiene el tamaño máximo del logo */
+  /*   height: auto; Asegura que la proporción del logo sea correcta */
+}
+
+
+#header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+/*Enlaces a otras paginas de las cabeceras*/
+#header nav ul li a {
+    display: flex; /* Cambia el comportamiento a flexbox */
+    align-items: center; /* Alinea verticalmente el texto e icono */
+    gap: 8px; /* Agrega un espacio entre el icono y el texto */
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/*Enlaces a otras paginas de las cabeceras*/
+/* Iconos más pequeños si es necesario */
+#header nav ul li a i {
+    font-size: 1.2rem; /* Ajusta el tamaño de los iconos */
+}
+
+/*Enlaces a otras paginas de las cabeceras*/
+#header nav ul li a:hover {
+    background: #6576b4;
+    color: #2d3a68;
+    transform: scale(1.1);
+}
+
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    form {
+        grid-template-columns: 1fr;
+    }
+
+    #header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    #header nav ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* PIE DE PAGINA - Footer */
+/* Aseguramos que el HTML y el BODY ocupen el 100% del alto */
+html, body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #f1eeee;
+    font-family: "Poppins", sans-serif;
+}
+
+main {
+    flex: 1; /* Esto hace que el main crezca para llenar el espacio disponible */
+}
+
+/* Footer permanece al final */
+footer {
+    background: linear-gradient(to right, #5b5b5b,#2d2c2d);
+    color: white;
+    text-align: center;
+    width: 100%;
+    font-family: "Poppins", sans-serif;
+    padding: 10px 0;
+}
+
+footer p {
+    margin: 10px 0;
+}
+
+@import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+
+[class*="fontawesome-"]:before {
+    font-family: "Poppins", sans-serif;
+}
+
+/* CSS DE FUNCIONES */
+#management-section {
+    padding: 160px 70px;
+    text-align: center;
+    background: #f1eeee;
+    font-family: "Poppins", sans-serif;    
+}
+
+#management-section h1 {
+    /*color: #536895; 606e8c; 7f69a5; 8673a1; 6576b4;*/
+    color: #2d3a68;
+    margin-bottom: 25px;
+    font-family: "Poppins", sans-serif;
+}
+
+#management-section h2 {
+    color: #0e0d0d;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    font-family: 'Nunito', sans-serif;
+}
+
+#management-section .options {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+/*Fondo cajas*/
+#management-section .card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-family: 'Nunito', sans-serif;
+}
+
+#management-section .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+/*Colores FA FA*/
+#management-section .card i {
+    /*color: #536895; 606e8c; 7f69a5; 8673a1; 6576b4;*/
+    color: #6576b4;
+    margin-bottom: 20px;
+    font-size: 3rem;
+}
+
+#management-section .card h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 10px;
+
+}
+
+#management-section .card p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+/*Botones, colores*/
+#management-section .card a {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 20px;
+    background: #6576b4;
+    color: white;
+    font-size: 0.9rem;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#management-section .card a:hover {
+    background: #2d3a68;
+    transform: scale(1.05);
+}
+
+/* Ajuste de separación general entre tarjetas */
+#management-section .card {
+    margin: 10px;
+}
+
+#management-section .second-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+#management-section .second-row .card {
+    flex: 1 1 calc(33.33% - 40px); /* 3 por fila con espacio */
+    max-width: 300px;
+}
+
+/* Fuerza solo 2 en la segunda fila ocultando espacio */
+#management-section .second-row .card:nth-child(n+4) {
+    flex: 1 1 calc(50% - 40px); /* 2 por fila */
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    #management-section .second-row .card {
+        flex: 1 1 100%;
+        max-width: 90%;
+    }
+}
+
+/* Responsive para que se vea bien en móvil */
+@media (max-width: 768px) {
+    #management-section .second-row {
+        grid-template-columns: 1fr;
+    }
+
+    #management-section .card {
+        width: 90% !important;
+        margin: auto;
+    }
+}
+
+/* Diseño Responsivo */
+@media (max-width: 768px) {
+    #management-section .options {
+        flex-direction: column;
+    }
+
+    #management-section .card {
+        width: 90%;
+        margin-bottom: 20px;
+    }
+}

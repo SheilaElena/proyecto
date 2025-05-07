@@ -1,0 +1,416 @@
+/*FONDO DE PANTALLA*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*, *:before, *:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding:0;
+    margin:0;
+}
+
+
+/*CABECERA - header*/
+#header {
+    background: linear-gradient(to right, #5b5b5b,#2d2c2d);
+    color: white;
+    display: flex; /* Usamos Flexbox para centrar los elementos */
+    justify-content: space-between; /* Mantiene elementos separados en los extremos */
+    align-items: center; /* Centra verticalmente los elementos */
+    padding: 15px 50px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: "Poppins", sans-serif;
+    text-transform: uppercase;
+    height: 100px;
+}
+
+#header .logo {
+    display: flex; /* Activamos Flexbox */
+    justify-content: center; /* Centra horizontalmente el logo */
+    align-items: center; /* Centra verticalmente el logo */
+}
+
+#header .logo img {
+    max-width: 85px; /* Mantiene el tamaño máximo del logo */
+  /*   height: auto; Asegura que la proporción del logo sea correcta */
+}
+
+
+#header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+/* Ajusta el espaciado entre el icono y el texto */
+#header nav ul li a {
+    display: flex; /* Cambia el comportamiento a flexbox */
+    align-items: center; /* Alinea verticalmente el texto e icono */
+    gap: 8px; /* Agrega un espacio entre el icono y el texto */
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* Iconos más pequeños si es necesario */
+#header nav ul li a i {
+    font-size: 1.2rem; /* Ajusta el tamaño de los iconos */
+}
+
+/*Enlaces a otras paginas de las cabeceras*/
+#header nav ul li a:hover {
+    background: #6576b4;
+    color: #2d3a68;
+    transform: scale(1.1);
+}
+
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    form {
+        grid-template-columns: 1fr;
+    }
+
+    #header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    #header nav ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* PIE DE PAGINA - Footer */
+/* Aseguramos que el HTML y el BODY ocupen el 100% del alto */
+html, body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background: #f1eeee;
+    height: 100%;
+    font-family: "Poppins", sans-serif;
+}
+
+/* El contenedor principal ocupa el espacio disponible */
+main {
+    flex: 1; /* Esto hace que el main crezca para llenar el espacio disponible */
+}
+
+/* Footer permanece al final */
+footer {
+    background: linear-gradient(to right, #5b5b5b, #2d2c2d);
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    width: 100%;
+    font-family: "Poppins", sans-serif;
+}
+
+footer p {
+    margin: 10px 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+@import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
+}
+
+
+
+/* COMO TRABAJAMOS */
+.apartados {
+background-color: #f9f9f9;
+margin: 20px auto;
+padding: 30px 20px;
+border-radius: 10px;
+box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+max-width: 1200px;
+text-align: center;
+}
+
+
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+h1, h3 {
+    font-size: 1.8rem;
+}
+
+h4 {
+    font-size: 1.3rem;
+}
+
+.preguntas {
+    font-size: 0.9rem;
+}
+}
+
+
+/* ESTILOS COACHING */
+section h2.ApartadoCoachingTit {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 34px;
+    color: #2d3a68;
+}
+
+.coaching {
+    margin: 15px 0;
+    text-transform: none;
+    color: #2d3a68;
+}
+
+.expl_tiposcoaching {
+    color: #515151;
+    font-size: 16px;
+    line-height: 1.75;
+    padding: 2%;
+    display: flex;
+    justify-content: center;
+
+}
+
+.Centrar_info_coaching{
+    display: flex;
+    justify-content: center;
+    padding-bottom: 36px;
+}
+
+
+.lock-icon_2{
+    color: #6576b4; /* Color fafa */
+    font-size: 40px;
+    padding-top: 3%;
+}
+
+.fafa {
+    justify-content: center;
+    display: flex;
+}
+
+.coaching_columnas {
+    display: flex;
+    flex-wrap: wrap; /* Permite que las cajas se ajusten automáticamente en filas */
+    justify-content: space-between; /* Espacia las cajas de manera uniforme */
+    gap: 20px; /* Espaciado entre las columnas y filas */
+}
+
+
+.cajatiposcoaching {
+    flex: 0 0 calc(33.333% - 13.33px);
+    box-sizing: border-box; /* Asegura que padding y border no afecten el ancho */
+    margin-bottom: 20px; /* Espacio entre filas */
+}
+
+
+/* 2 por fila en tablets */
+@media (max-width: 992px) {
+    .cajatiposcoaching {
+        flex: 0 0 calc(50% - 10px); /* 2 por fila */
+    }
+}
+
+/* 1 por fila en móviles */
+@media (max-width: 600px) {
+    .cajatiposcoaching {
+        flex: 0 0 100%; /* 1 por fila */
+    }
+}
+
+
+
+
+
+@media(min-width:768px) {
+    section {
+        padding: 44px 90px;
+    }
+}
+
+
+/* SOBRE EL TRABAJO */
+.textos_quienessomos {
+    color: #515151;
+    font-size: 20px;
+    line-height: 1.75;
+}
+
+.titulos_quienessomos, .textoinicioCoaching, .textoinicio, .SobreNosotrosTit, .ApartadoCoachingTit, .coaching {
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+}
+
+.textoinicio{
+    padding-bottom: 20px;
+}
+
+
+/* RESPONSIVE */
+@media(min-width:768px) {
+    #SobreNosotras {
+        padding: 50px 0;
+    }
+}
+
+@media(min-width:768px) {
+    .todaslaspreguntas:before {
+        left: 50%;
+    }
+
+    .todaslaspreguntas>li {
+        margin-bottom: 100px;
+        min-height: 100px;
+    }
+
+    .todaslaspreguntas>li .apartadopregunta {
+        float: left;
+        width: 41%;
+        padding: 0 20px 20px 30px;
+        text-align: right;
+    }
+
+    .todaslaspreguntas>li .decoracion {
+        left: 50%;
+        width: 100px;
+        height: 100px;
+        margin-left: -50px;
+    }
+
+    .todaslaspreguntas>li .decoracion h4 {
+        margin-top: 16px;
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .todaslaspreguntas>li.otrolado>.apartadopregunta {
+        float: right;
+        padding: 0 30px 20px 20px;
+        text-align: left;
+    }
+}
+
+@media(min-width:992px) {
+    .todaslaspreguntas>li {
+        min-height: 150px;
+    }
+
+    .todaslaspreguntas>li .apartadopregunta {
+        padding: 0 20px 20px;
+    }
+
+    .todaslaspreguntas>li .decoracion {
+        width: 150px;
+        height: 150px;
+        margin-left: -75px;
+    }
+
+    .todaslaspreguntas>li .decoracion h4 {
+        margin-top: 30px;
+        font-size: 18px;
+        line-height: 26px;
+    }
+
+    .todaslaspreguntas>li.otrolado>.apartadopregunta {
+        padding: 0 20px 20px;
+    }
+}
+
+@media(min-width:1200px) {
+    .todaslaspreguntas>li {
+        min-height: 170px;
+    }
+
+    .todaslaspreguntas>li .apartadopregunta {
+        padding: 0 20px 20px 100px;
+    }
+
+    .todaslaspreguntas>li .decoracion {
+        width: 170px;
+        height: 170px;
+        margin-left: -85px;
+    }
+
+    .todaslaspreguntas>li .decoracion h4 {
+        margin-top: 40px;
+    }
+
+    .todaslaspreguntas>li.otrolado>.apartadopregunta {
+        padding: 0 100px 20px 20px;
+    }
+}
+
+
+
+hr.highlight {
+height: 0.30rem;
+width: 6rem;
+background: #606e8c;
+margin: 0 auto 20px;
+margin-top: 20px;
+}
+
+
+
+/*FA FA*/
+.lock-icon {
+color: #887474; /* Color fafa */
+font-size: 2rem; /* Ajusta el tamaño del icono */
+padding-bottom: 5%;
+padding-top: 5%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+/* General Container Styling */
+.highlight {
+    width: 40px; /* Línea más pequeña */
+    height: 3px;
+}
+
+
+.coaching_columnas {
+    flex-direction: column; /* Cambia a una columna en lugar de filas */
+}
+}
+
+.imagenes img {
+    max-width: 84%;
+    height: auto;
+    display: block;
+    margin: 0 auto; /* Centra horizontalmente */
+    border-radius: 8px; /* Esquinas redondeadas */
+    object-fit: contain; /* Evita que se deforme */ 
+}
+
+p.comandos {
+    color: rgb(26, 25, 25);
+    font-size: 16px;
+    line-height: 1.75;
+    justify-content: center;
+    display: flex;
+    font-weight: bold;
+    margin: 5px 0px;
+}

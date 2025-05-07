@@ -1,0 +1,689 @@
+/*FONDO DE PANTALLA*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*, *:before, *:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding:0;
+    margin:0;
+}
+
+
+/*CABECERA - header*/
+#header {
+    background: linear-gradient(to right, #5b5b5b,#2d2c2d);
+    color: white;
+    display: flex; /* Usamos Flexbox para centrar los elementos */
+    justify-content: space-between; /* Mantiene elementos separados en los extremos */
+    align-items: center; /* Centra verticalmente los elementos */
+    padding: 15px 50px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: "Poppins", sans-serif;
+    text-transform: uppercase;
+    height: 100px;
+}
+
+#header .logo {
+    display: flex; /* Activamos Flexbox */
+    justify-content: center; /* Centra horizontalmente el logo */
+    align-items: center; /* Centra verticalmente el logo */
+}
+
+#header .logo img {
+    max-width: 85px; /* Mantiene el tamaño máximo del logo */
+}
+
+
+#header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+/* Ajusta el espaciado entre el icono y el texto */
+#header nav ul li a {
+    display: flex; /* Cambia el comportamiento a flexbox */
+    align-items: center; /* Alinea verticalmente el texto e icono */
+    gap: 8px; /* Agrega un espacio entre el icono y el texto */
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* Iconos más pequeños si es necesario */
+#header nav ul li a i {
+    font-size: 1.2rem; /* Ajusta el tamaño de los iconos */
+}
+
+#header nav ul li a:hover {
+    background: #6576b4;
+    color: #2d3a68;
+    transform: scale(1.1);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    form {
+        grid-template-columns: 1fr;
+    }
+
+    #header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    #header nav ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* PIE DE PAGINA - Footer */
+html, body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #f1eeee;
+    font-family: "Poppins", sans-serif;
+}
+
+/* El contenedor principal ocupa el espacio disponible */
+main {
+    flex: 1; /* Esto hace que el main crezca para llenar el espacio disponible */
+}
+
+/* Footer permanece al final */
+footer {
+    background: linear-gradient(to right, #5b5b5b,#2d2c2d);
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    width: 100%;
+    font-family: "Poppins", sans-serif;
+}
+
+
+@import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
+}
+
+
+.container {
+  max-width: 60em;
+  min-width: 45em;
+  margin: 0 auto;
+  padding: 0 2em;
+}
+
+.nav_inicio {
+    position: fixed;
+    width: 100%;
+    margin: 0 auto;
+    top: 0;
+    z-index: 3;
+}
+
+.nav_inicio ul {
+    padding-top: 12px;
+    margin: 10px;
+    list-style-type: none;
+    float: right;
+}
+
+.nav_inicio ul li {
+  display: inline-block;
+  padding: 0.5em;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.nav_inicio ul li:last-child {
+  padding-right: 0;
+
+}
+
+.nav_inicio ul li a {
+  color: #FFF;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.nav_inicio ul li a:hover {
+  color: #000000;
+  background-color: rgb(221, 190, 155);
+  padding: 5px;
+}
+
+.container .frase_inicio{
+    text-align: center;            
+}
+
+#icon {
+  display: inline-block;
+  padding-top: 0.7em;
+  font-size: 2em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+
+#nav-bg {
+  background: #645047;
+  position: fixed;
+  height: 5em;
+  width: 100%;
+  top: 0;
+  z-index: 1;
+}
+
+header {
+  position: relative;
+  background: url("../img/iniciofoto.jpg");
+  background-position: center;
+  background-size: cover;
+  padding: 10em 0 8em;
+  z-index: 2;
+  
+}
+
+header h1 {
+  font-size: 4em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+section.apartados .centrar_info {
+    flex-direction: column;
+}
+
+section.apartados .info_ubi,
+section.apartados .horarios {
+    flex: 1 1 100%; /* Ancho completo en pantallas pequeñas */
+}
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+h1, h3 {
+    font-size: 1.8rem;
+}
+
+h4 {
+    font-size: 1.3rem;
+}
+
+.preguntas {
+    font-size: 0.9rem;
+}
+}
+
+
+/* ESTILOS COACHING */
+section h2.ApartadoCoachingTit {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+.expl_tiposcoaching {
+    color: #000000;
+    font-size: 18px;
+    line-height: 1.75;
+    font-family: 'Nunito', sans-serif;
+
+}
+
+.Centrar_info_coaching{
+    display: flex;
+    justify-content: center;
+    padding-bottom: 20px;
+}
+
+
+.lock-icon_2{
+    color: #6576b4; /* Color fafa */
+    font-size: 40px; /* Ajusta el tamaño del icono */
+}
+
+hr.highlight {
+    all: unset; /* Limpia estilos por defecto */
+    display: block; /* Asegura que se comporte como bloque */
+    height: 0.30rem;
+    width: 6rem;
+    background: #606e8c;
+    margin: 22px auto;
+    border: none; /* Elimina el borde por defecto de <hr> */
+}
+
+
+
+/* RESPONSIVE */
+@media(min-width:768px) {
+    section {
+        padding: 150px 0;
+    }
+}
+
+
+/* SOBRE EL TRABAJO */
+.textos_quienessomos {
+    color: #515151;
+    font-size: 18px;
+    line-height: 1.75;
+}
+
+.textoooss{
+    color: #515151;
+    font-size: 16px;
+    line-height: 1.75;
+}
+
+
+.titulos_quienessomos, .textoinicioCoaching, .textoinicio, .SobreNosotrosTit, .ApartadoCoachingTit, .coaching, .coaching2{
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+}
+
+.textoinicio{
+    padding-bottom: 10px;
+}
+
+#SobreNosotras {
+    padding: 50px 0;
+}
+
+#SobreNosotras h2.SobreNosotrosTit {
+    margin-top: 0;
+    /*margin-bottom: 15px;*/
+    font-size: 34px;
+    color: #2d3a68;
+}
+
+#SobreNosotras h3.section-titulos_quienessomos {
+    margin-bottom: 75px;
+    text-transform: none;
+    font-family: "Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 400;
+}
+
+.todaslaspreguntas {
+    position: relative;
+    padding: 0;
+    list-style: none;
+}
+
+.todaslaspreguntas:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 40px;
+    width: 2px;
+    margin-left: -1.5px;
+    background-color: #6a5245;
+}
+
+.todaslaspreguntas>li {
+    position: relative;
+    margin-bottom: 50px;
+    min-height: 50px;
+}
+
+.todaslaspreguntas>li:before,
+.todaslaspreguntas>li:after {
+    content: " ";
+    display: table;
+}
+
+.todaslaspreguntas>li:after {
+    clear: both;
+}
+
+.todaslaspreguntas>li .apartadopregunta {
+    float: right;
+    position: relative;
+    width: 100%;
+    padding: 0 20px 0 100px;
+    text-align: left;
+}
+
+.todaslaspreguntas>li .apartadopregunta:before {
+    right: auto;
+    left: -15px;
+    border-right-width: 15px;
+    border-left-width: 0;
+}
+
+.todaslaspreguntas>li .apartadopregunta:after {
+    right: auto;
+    left: -14px;
+    border-right-width: 14px;
+    border-left-width: 0;
+}
+
+
+/*CCS de las bolas de decoración*/
+.todaslaspreguntas>li .decoracion {
+    z-index: 100;
+    position: absolute;
+    left: 0;
+    width: 80px;
+    height: 80px;
+    margin-left: 0;
+    border: 7px solid #2d3a68;
+    border-radius: 100%;
+    text-align: center;
+    color: #000000;
+    background-color: #6576b4;
+}
+
+.todaslaspreguntas>li .decoracion h4 {
+    margin-top: 12px;
+    font-size: 10px;
+    line-height: 14px;
+}
+
+.todaslaspreguntas>li.otrolado>.apartadopregunta {
+    float: right;
+    padding: 0 20px 0 100px;
+    text-align: left;
+}
+
+.todaslaspreguntas>li.otrolado>.apartadopregunta:before {
+    right: auto;
+    left: -15px;
+    border-right-width: 15px;
+    border-left-width: 0;
+}
+
+.todaslaspreguntas>li.otrolado>.apartadopregunta:after {
+    right: auto;
+    left: -14px;
+    border-right-width: 14px;
+    border-left-width: 0;
+}
+
+.todaslaspreguntas>li:last-child {
+    margin-bottom: 0;
+}
+
+.todaslaspreguntas .preguntasola h4 {
+    margin-top: 0;
+    color: inherit;
+}
+
+.todaslaspreguntas .preguntasola h4.titulos_quienessomos {
+    text-transform: none;
+    font-size: 18px;
+}
+
+.todaslaspreguntas .cajatextos>p,
+.todaslaspreguntas .cajatextos>ul {
+    margin-bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+} 
+
+.cajascripts .scripts{
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 38px 0px 0px 0px;
+
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #2d3a68;
+
+    font-size: 34px;
+}
+
+
+/* RESPONSIVE */
+@media(min-width:768px) {
+    #SobreNosotras {
+        padding: 50px 0 0 0;
+    }
+}
+
+@media(min-width:768px) {
+    .todaslaspreguntas:before {
+        left: 50%;
+    }
+
+    .todaslaspreguntas>li {
+        margin-bottom: 100px;
+        min-height: 100px;
+    }
+
+    .todaslaspreguntas>li .apartadopregunta {
+        float: left;
+        width: 41%;
+        padding: 0 20px 20px 30px;
+        text-align: right;
+    }
+
+    .todaslaspreguntas>li .decoracion {
+        left: 50%;
+        width: 100px;
+        height: 100px;
+        margin-left: -50px;
+    }
+
+    .todaslaspreguntas>li .decoracion h4 {
+        margin-top: 16px;
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .todaslaspreguntas>li.otrolado>.apartadopregunta {
+        float: right;
+        padding: 0 30px 20px 20px;
+        text-align: left;
+    }
+}
+
+@media(min-width:992px) {
+    .todaslaspreguntas>li {
+        min-height: 150px;
+    }
+
+    .todaslaspreguntas>li .apartadopregunta {
+        padding: 0 20px 20px;
+    }
+
+    .todaslaspreguntas>li .decoracion {
+        width: 150px;
+        height: 150px;
+        margin-left: -75px;
+    }
+
+    .todaslaspreguntas>li .decoracion h4 {
+        margin-top: 30px;
+        font-size: 18px;
+        line-height: 26px;
+    }
+
+    .todaslaspreguntas>li.otrolado>.apartadopregunta {
+        padding: 0 20px 20px;
+    }
+}
+
+@media(min-width:1200px) {
+    .todaslaspreguntas>li {
+        min-height: 170px;
+    }
+
+    .todaslaspreguntas>li .apartadopregunta {
+        padding: 0 20px 20px 100px;
+    }
+
+    .todaslaspreguntas>li .decoracion {
+        width: 150px;
+        height: 150px;
+        margin-left: -76px;
+    }
+
+   /* .todaslaspreguntas>li .decoracion h4 {
+        margin-top: 40px;
+    }*/
+
+    .todaslaspreguntas>li.otrolado>.apartadopregunta {
+        padding: 0 100px 20px 20px;
+    }
+}
+
+
+.fila-coaching {
+    display: flex;
+    justify-content: center; /* centra las cajas */
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 0 40px; /* espacio a los lados de la pantalla */
+    margin-bottom: 40px;
+}
+
+.info_coaching {
+    flex: 1 1 45%; /* cajas más estrechas */
+    max-width: 710px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    padding: 14px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    margin: 26px 14px;
+}
+
+
+/* Responsive: 1 columna en pantallas pequeñas */
+@media screen and (max-width: 768px) {
+    .info_coaching {
+        flex: 1 1 100%;
+    }
+}
+
+/* Individuales */
+
+.individual {
+    display:flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 0 40px;
+    margin-bottom: 40px;
+}
+
+
+.titulos_individuales {
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-size: 19px;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+}
+
+#SobreNosotras h3.section-titulos_individuales {
+    margin-bottom: 75px;
+    text-transform: none;
+    font-family: "Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 400;
+}
+
+.preguntasola h4.titulos_individuales {
+    text-transform: none;
+    padding: 48px 0px ;
+    font-family: "Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
+
+}
+
+
+.fafa {
+    justify-content: center;
+    display: flex
+;
+}
+
+.Centrar_info_coaching2 {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 36px;
+}
+
+.coaching_columnas2 {
+    display: flex;
+    justify-content: center;
+  }
+
+  .coaching_columnas2 img {
+    width: 100%;         /* La imagen ocupa todo el ancho de la caja */
+    height: auto;        /* Mantiene la proporción original */
+  }
+
+
+
+.cajatiposcoaching2 {
+    flex: 0 0 100%;
+}
+
+
+.expl_tiposcoaching2 {
+    color: #515151;
+    font-size: 16px;
+    line-height: 1.75;
+    padding: 0px 0px 6px 0px;
+    display: flex;
+    justify-content: center;
+}
+
+
+.coaching2 {
+    margin: 15px 0;
+    text-transform: none;
+    color: #2d3a68;
+}
+
+
+
+h2.ApartadoCoachingTit {
+    margin-top: 22px;
+}
+
+
+
+.lock-icon_2 {
+    color: #6576b4;
+    font-size: 3rem;
+    padding-top: 3%;
+}
+
+.imageneess2 {
+    display: flex
+;
+    margin: 16px 38px;
+}
