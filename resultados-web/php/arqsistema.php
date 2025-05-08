@@ -84,22 +84,6 @@ if (!$conn) {
                     <img src="../img/esquemabf.png" alt="teclado">
             </div>
 
-            <!-- CONEXIÓN -->
-
-            <div class="Centrar_info_coaching">
-                <div class="col-lg-12 text-center">
-                <hr class="highlight"/> <!-- SEPARADOR-->
-                    <h2 class="ApartadoCoachingTit">Conexión</h2>
-                    <h3 class="textoinicioCoaching" ></h3>
-                </div>
-            </div>
-
-            <hr class="highlight"/> <!-- SEPARADOR-->
-
-            <div class="imagenarq">
-                    <img src="../img/conexion.png" alt="teclado">
-            </div>
-
             <hr class="highlight"/> <!-- SEPARADOR-->
 
         </div> <!-- info_coaching -->
