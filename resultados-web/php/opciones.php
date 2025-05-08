@@ -83,7 +83,7 @@ if (!$conn) {
 
             </div>
             <div class="options second-row">
-                <!-- Card 3 -->
+                <!-- Card 2 -->
                 <div class="card">
                     <i class="fa-solid fa-fish"></i>
                     <h3>Phishing</h3>
@@ -91,6 +91,14 @@ if (!$conn) {
                     <a href="phishing.php">Más información</a>
                 </div>
 
+                <!-- Card 3 -->
+                <div class="card">
+                    <i class="fa-regular fa-image"></i>
+                    <h3>Imagen</h3>
+                    <p>A partir de una imagen, ejecutar el keylogger en la víctima sin que se de cuenta.</p>
+                    <a href="imagen.php">Más información</a>
+                </div>
+               
                 <!-- Card 4 -->
                 <div class="card">
                     <i class="fa-brands fa-usb"></i>
@@ -100,14 +108,6 @@ if (!$conn) {
                 </div>
 
                 <!-- Card 5 -->
-                <div class="card">
-                    <i class="fa-regular fa-image"></i>
-                    <h3>Imagen</h3>
-                    <p>A partir de una imagen, ejecutar el keylogger en la víctima sin que se de cuenta.</p>
-                    <a href="imagen.php">Más información</a>
-                </div>
-
-                <!-- Card 6 -->
                 <div class="card">
                     <i class="fa-regular fa-thumbs-up"></i>
                     <h3>Real</h3>
