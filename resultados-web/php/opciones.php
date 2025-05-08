@@ -60,7 +60,7 @@ if (!$conn) {
             <nav>
                 <ul>
                     <?php
-                        echo "<li><a href='../indexx.php'><i class='fa fa-home'></i> <span data-translate='inicio'>Salir</span></a></li>";
+                        echo "<li><a href='../index.php'><i class='fa fa-home'></i> <span data-translate='inicio'>Salir</span></a></li>";
                         echo '<br>';
                     ?>
                 </ul>
