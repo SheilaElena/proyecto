@@ -64,7 +64,7 @@ http://localhost/php/migraciones.php
 ```
 Este script realizará las migraciones necesarias para preparar el entorno.
 
-10. Acceder a la Web
+## 10. Acceder a la Web
 Una vez realizados todos los pasos anteriores, puedes abrir el archivo index.php desde tu navegador usando:
 
 ```php
