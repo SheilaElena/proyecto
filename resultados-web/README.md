@@ -54,9 +54,9 @@ Revisa si hay redirecciones automáticas o rutas absolutas que bloqueen el acces
 Asegúrate de que el index.php permita la navegación y acceso al resto de carpetas y archivos necesarios para el funcionamiento del sistema (como php/migracion.php y los archivos de la carpeta GestionBD).
 
 ## 8. Ejecutar los Archivos de la Carpeta GestionBD
-Dirígete a la carpeta CONEXION dentro del proyecto y ejecuta cada uno de los archivos PHP que contiene para establecer correctamente las conexiones necesarias.
+Dirígete a la carpeta GestionBD dentro del proyecto y ejecuta cada uno de los archivos PHP que contiene para establecer correctamente las conexiones necesarias.
 
-## 9. Acceder a /php/migraciones.php
+## 9. Acceder a /php/migracion.php
 En tu navegador, ve a la siguiente dirección:
 
 ```php 
