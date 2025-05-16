@@ -32,7 +32,7 @@ Abre tu navegador y accede a `http://localhost/` o al nombre del host local corr
 
 Es necesario modificar cada uno de los archivos PHP para que funcionen correctamente en un entorno local:
 
-- En todos los archivos PHP donde se establece una conexión a la base de datos, localiza el parámetro `HOST`.
+- En todos los archivos PHP donde se establece una conexión a la base de datos, localiza el parámetro `servername`.
 - Modifícalo para que apunte a `localhost` en lugar de un servidor externo.
 
 Ejemplo:
@@ -50,25 +50,20 @@ Es importante modificar el archivo index.php. Por defecto, este archivo redirige
 Qué hacer:
 Revisa si hay redirecciones automáticas o rutas absolutas que bloqueen el acceso a subdirectorios.
 
-Asegúrate de que el index.php permita la navegación y acceso al resto de carpetas y archivos necesarios para el funcionamiento del sistema (como php/migraciones.php y los archivos de la carpeta CONEXION).
+Asegúrate de que el index.php permita la navegación y acceso al resto de carpetas y archivos necesarios para el funcionamiento del sistema (como php/migracion.php y los archivos de la carpeta GestionBD).
 
-8. Ejecutar los Archivos de la Carpeta CONEXION
+8. Ejecutar los Archivos de la Carpeta GestionBD
 Dirígete a la carpeta CONEXION dentro del proyecto y ejecuta cada uno de los archivos PHP que contiene para establecer correctamente las conexiones necesarias.
 
 9. Acceder a /php/migraciones.php
 En tu navegador, ve a la siguiente dirección:
 
 arduino
-Copiar
-Editar
 http://localhost/php/migraciones.php
 Este script realizará las migraciones necesarias para preparar el entorno.
 
 10. Acceder a la Web
 Una vez realizados todos los pasos anteriores, puedes abrir el archivo index.php desde tu navegador usando:
 
-arduino
-Copiar
-Editar
 http://localhost/index.php
 ¡Y ya puedes empezar a utilizar la web en tu entorno local!
