@@ -39,10 +39,11 @@ Ejemplo:
 
 ```php
 // Antes:
-$host = 'nombre_del_servidor_remoto';
+    $servername = "mysql-db";
 
 // Después:
-$host = 'localhost';
+  $servername = "localhost";
+
 7. Modificar el Archivo index.php
 Es importante modificar el archivo index.php. Por defecto, este archivo redirige directamente a la página principal y puede impedir el acceso a otras carpetas o rutas del proyecto.
 
